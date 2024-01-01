@@ -73,7 +73,7 @@ spec:
       namespace: argocd
     spec:
       destination:
-        namespace: '{{ destNamespace }}'
+        namespace: 'staging'
         server: '{{ destServer }}'
       ignoreDifferences:
       - group: argoproj.io
