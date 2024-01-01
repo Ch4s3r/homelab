@@ -1,8 +1,8 @@
 {
-  "appName": "hello-world",
-  "userGivenName": "hello-world",
+  "appName": "cloudflared",
+  "userGivenName": "cloudflared",
   "destServer": "https://kubernetes.default.svc",
-  "srcPath": "apps/hello-world/overlays/staging",
+  "srcPath": "apps/hello-world/overlays/production",
   "srcRepoURL": "https://github.com/Ch4s3r/homelab.git",
   "srcTargetRevision": "",
   "labels": null,
