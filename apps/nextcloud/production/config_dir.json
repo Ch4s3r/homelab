@@ -3,7 +3,7 @@
   "userGivenName": "nextcloud",
   "destNamespace": "default",
   "destServer": "https://kubernetes.default.svc",
-  "srcPath": ".",
+  "srcPath": "charts/nextcloud",
   "srcRepoURL": "https://github.com/nextcloud/helm.git",
   "srcTargetRevision": "",
   "labels": null,
