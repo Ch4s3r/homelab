@@ -31,4 +31,4 @@ spec:
       volumes:
       - name: data
         persistentVolumeClaim:
-          claimName: local-path-pvc
+          claimName: retain-local-path-pvc
