@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: volume-test
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: volume-test
