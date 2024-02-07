@@ -9,5 +9,5 @@ data:
     metrics: 0.0.0.0:2000
     no-autoupdate: true
     ingress:
-    - hostname: *.lampe.wtf
+    - hostname: "*.lampe.wtf"
       service: http://treaefik:80
