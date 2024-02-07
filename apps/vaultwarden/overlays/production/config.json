@@ -1,0 +1,10 @@
+{
+  "appName": "hello-world",
+  "userGivenName": "hello-world",
+  "destServer": "https://kubernetes.default.svc",
+  "srcPath": "apps/vaultwarden/overlays/production",
+  "srcRepoURL": "https://github.com/Ch4s3r/homelab.git",
+  "srcTargetRevision": "",
+  "labels": null,
+  "annotations": null
+}
