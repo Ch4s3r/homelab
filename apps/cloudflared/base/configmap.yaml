@@ -9,10 +9,5 @@ data:
     metrics: 0.0.0.0:2000
     no-autoupdate: true
     ingress:
-    - hostname: simple.lampe.wtf
-      service: http://simple-service:80
-    - hostname: vaultwarden.lampe.wtf
-      service: http://vaultwarden-service:80
-    - hostname: hello.lampe.wtf
-      service: hello_world
-    - service: http_status:404
+    - hostname: *.lampe.wtf
+      service: http://treaefik:80
