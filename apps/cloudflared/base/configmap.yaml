@@ -12,7 +12,7 @@ data:
     - hostname: simple.lampe.wtf
       service: http://simple-service:80
     - hostname: vaultwarden.lampe.wtf
-      service: vaultwarden:80
+      service: http://vaultwarden-service:80
     - hostname: hello.lampe.wtf
       service: hello_world
     - service: http_status:404
