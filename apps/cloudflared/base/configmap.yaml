@@ -9,4 +9,4 @@ data:
     metrics: 0.0.0.0:2000
     no-autoupdate: true
     ingress:
-    - service: http://192.168.205.2:80
+    - service: http://traefik.kube-system:80
