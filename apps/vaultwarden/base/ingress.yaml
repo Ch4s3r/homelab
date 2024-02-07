@@ -1,13 +1,16 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
   name: vaultwarden-ingress
 spec:
-  entryPoints:
-    - web
-  routes:
-  - match: Host(`vaultwarden.lampe.wtf`)
-    kind: Rule
-    services:
-    - name: my-service
-      port: 80
+  rules:
+    - host: vaultwarden.lampe.wtf
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name:  service1
+                port:
+                  number: 80
