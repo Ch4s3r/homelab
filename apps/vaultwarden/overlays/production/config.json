@@ -1,6 +1,6 @@
 {
-  "appName": "hello-world",
-  "userGivenName": "hello-world",
+  "appName": "vaultwarden",
+  "userGivenName": "vaultwarden",
   "destServer": "https://kubernetes.default.svc",
   "srcPath": "apps/vaultwarden/overlays/production",
   "srcRepoURL": "https://github.com/Ch4s3r/homelab.git",
