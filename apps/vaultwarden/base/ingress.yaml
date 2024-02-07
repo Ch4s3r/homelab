@@ -11,6 +11,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name:  service1
+                name:  vaultwarden-service
                 port:
                   number: 80
