@@ -1,3 +1,14 @@
+# Rancher Desktop setup
+
+```bash
+rdctl shell
+```
+
+Symlink:
+```bash
+/var/lib/rancher/k3s/storage -> /Volumes/<data-location>
+```
+
 # Apps
 This directory contains all of the applications you installed by using:
 ```bash
