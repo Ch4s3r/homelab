@@ -8,7 +8,7 @@ spec:
   source:
     path: charts/nextcloud
     repoURL: https://github.com/nextcloud/helm
-    targetRevision: nextcloud-4.5.1
+    targetRevision: nextcloud-4.6.8
   destination:
     server: "https://kubernetes.default.svc"
     namespace: nextcloud
