@@ -13,4 +13,4 @@ spec:
       releaseName: nextcloud
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: kubeseal
+    namespace: nextcloud
