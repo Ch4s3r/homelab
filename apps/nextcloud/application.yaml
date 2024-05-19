@@ -6,8 +6,8 @@ metadata:
 spec:
   project: default
   source:
-    path: charts/nextcloud
     repoURL: https://github.com/nextcloud/helm
+    path: charts/nextcloud
     targetRevision: nextcloud-4.6.8
   destination:
     server: "https://kubernetes.default.svc"
