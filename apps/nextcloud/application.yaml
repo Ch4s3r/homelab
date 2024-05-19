@@ -6,11 +6,21 @@ metadata:
 spec:
   project: default
   source:
-    chart: charts/nextcloud
+    path: charts/nextcloud
     repoURL: https://github.com/nextcloud/helm
     targetRevision: nextcloud-4.5.1
-    helm:
-      releaseName: nextcloud
   destination:
     server: "https://kubernetes.default.svc"
     namespace: nextcloud
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated: 
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
