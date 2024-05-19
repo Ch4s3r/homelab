@@ -23,3 +23,6 @@ k apply -f pod-with-pvc.yaml
 
 k apply -f immich-pvc.yaml
 helm install --namespace immich immich immich/immich -f immich-values.yaml
+
+argocd login localhost:8080
+
