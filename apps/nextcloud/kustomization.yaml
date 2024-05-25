@@ -5,5 +5,5 @@ metadata:
   namespace: nextcloud
 helmCharts:
   - name: nextcloud/nextcloud
-    repo: https://nextcloud.github.io/helm/
+    # repo: https://nextcloud.github.io/helm/
     version: 4.6.8
