@@ -4,7 +4,7 @@ metadata:
   name: nextcloud
   namespace: nextcloud
 helmCharts:
-  - name: nextcloud/nextcloud
-    releaseName: nextcloud
-    repo: https://nextcloud.github.io/helm/
-    version: 4.6.8
+  - name: bitnami/nginx
+    releaseName: nginx
+    repo: https://charts.bitnami.com/bitnami
+    version: 17.3.0
