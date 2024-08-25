@@ -7,4 +7,4 @@ helmCharts:
   - name: bitnami/nginx
     releaseName: nginx
     repo: https://charts.bitnami.com/bitnami
-    version: 17.3.0
+    version: 18.1.11
