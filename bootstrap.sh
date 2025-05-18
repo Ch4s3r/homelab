@@ -28,6 +28,12 @@ kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
+kubectl create namespace tailscale
+kubectl create secret generic operator-oauth \
+  --namespace tailscale \
+  --from-literal=client_id="XXXX" \
+  --from-literal=client_secret="tskey-client-XXXX"
+
 velero install \
         --use-node-agent \
         --default-volumes-to-fs-backup \
