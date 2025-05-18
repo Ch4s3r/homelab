@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nri-integration-cfg-example
+  namespace: newrelic
+data:
+  btrfs-device-stats.yml: |
+    integrations:
+      - name: nri-flex
+        config:
+          name: btrfs_device_stats
+          apis:
+            - name: btrfs_device_stats
+              commands:
+                - run: btrfs device stats /mnt/data/
+                  split: vertical
+                  regex: '^(.*): (\d+)$'
+                  set_header: [stat, value]

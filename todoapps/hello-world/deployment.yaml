@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volume-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: volume-test
+  template:
+    metadata:
+      labels:
+        app: volume-test
+    spec:
+      containers:
+      - name: volume-test
+        image: nginx:stable-alpine
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "512Mi"
+          requests:
+            cpu: "0.1"
+            memory: "128Mi"
+        ports:
+        - containerPort: 80

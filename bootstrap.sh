@@ -1,9 +1,28 @@
-curl -sfL https://get.k3s.io | sh -s - --write-kubeconfig-mode=644 --cluster-cidr=10.42.0.0/16,2001:cafe:42::/56 --service-cidr=10.43.0.0/16,2001:cafe:43::/112 --default-local-storage-path /mnt/data
-kubectl config view --raw
-pbpaste | tee ~/.kube/macmini
-set -x KUBECONFIG ~/.kube/macmini
+sudo mkfs.btrfs -L data -d raid1 -m raid1 /dev/sda /dev/sdb
+UUID=$(sudo blkid -s UUID -o value /dev/sda)
+sudo mkdir -p /mnt/data
+echo "UUID=$UUID /mnt/data btrfs defaults,noatime,compress=zstd:3,space_cache=v2,autodefrag,nofail 0 2" | sudo tee -a /etc/fstab
+sudo systemctl daemon-reload
+sudo mount -a
+sudo btrfs filesystem show /mnt/data
+# sudo vim /etc/sysconfig/btrfsmaintenance # set the PATHs to auto
+sudo systemctl enable --now btrfs-scrub.timer btrfs-balance.timer btrfs-trim.timer
 
-k3d cluster create -i latest
+# sudo dnf install hd-idle
+# sudo systemctl enable --now hd-idle
+
+sudo touch /mnt/data/systemd_check_file
+sudo vim /etc/systemd/system/k3s.service
+# [Unit]
+# ConditionPathExists=/mnt/data/systemd_check_file
+sudo systemctl daemon-reload
+
+curl -sfL https://get.k3s.io | sh -s - --default-local-storage-path /mnt/data
+pbpaste | tee ~/.kube/macmini
+sudo cat /etc/rancher/k3s/k3s.yaml
+export KUBECONFIG=~/.kube/macmini
+
+# k3d cluster create -i latest
 kubectl annotate storageclass local-path defaultVolumeType=local
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
@@ -26,3 +45,6 @@ helm install --namespace immich immich immich/immich -f immich-values.yaml
 
 argocd login localhost:8080
 
+cloudflared tunnel delete mac-mini
+cloudflared tunnel create mac-mini
+kubectl create secret generic -n cloudflared tunnel-credentials --from-file=credentials.json=/Users/lampe/.cloudflared/a212fe06-f2bf-4430-9d56-5b3f275440fc.json
