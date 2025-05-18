@@ -18,8 +18,9 @@ sudo vim /etc/systemd/system/k3s.service
 sudo systemctl daemon-reload
 
 curl -sfL https://get.k3s.io | sh -s - --default-local-storage-path /mnt/data
-pbpaste | tee ~/.kube/macmini
 sudo cat /etc/rancher/k3s/k3s.yaml
+pbpaste | tee ~/.kube/macmini
+
 export KUBECONFIG=~/.kube/macmini
 
 # k3d cluster create -i latest
@@ -49,6 +50,7 @@ k apply -f pod-with-pvc.yaml
 k apply -f immich-pvc.yaml
 helm install --namespace immich immich immich/immich -f immich-values.yaml
 
+kubectl port-forward -n argocd svc/argocd-server 80:80 &
 argocd login localhost:8080
 
 cloudflared tunnel delete mac-mini
