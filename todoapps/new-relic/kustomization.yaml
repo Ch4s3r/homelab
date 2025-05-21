@@ -5,7 +5,7 @@ helmCharts:
 - name: nri-bundle
   repo: https://helm-charts.newrelic.com
   releaseName: newrelic-bundle
-  version: "5.0.123"
+  version: "5.0.124"
   valuesFile: values.yaml
 resources:
 - nri-integration-cfg-example.yaml
