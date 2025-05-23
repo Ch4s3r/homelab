@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: couchdb-local-ini
+data:
+  local.ini: |
+    [couchdb]
+    single_node=true
+    uuid=9eb0b3ff-2eeb-4f9e-876a-96bf0bf68b0c
+    
+    [chttpd]
+    require_valid_user = false
+    
+    [httpd]
+    enable_cors = true
+    
+    [cors]
+    origins = *
+    credentials = true
+    methods = GET, PUT, POST, HEAD, DELETE
+    headers = accept, authorization, content-type, origin, referer, x-csrf-token
+    
+    [cluster]
+    n=1
+    q=1

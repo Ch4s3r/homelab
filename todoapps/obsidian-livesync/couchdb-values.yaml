@@ -1,0 +1,75 @@
+allowAdminParty: false
+adminUsername: 
+adminPassword: 
+
+# Critical: set cluster size to 1 and use single node mode
+clusterSize: 1
+
+# Single node configuration
+couchdbConfig:
+  couchdb:
+    single_node: true
+    uuid: 9eb0b3ff-2eeb-4f9e-876a-96bf0bf68b0c
+  cluster:
+    q: 1
+    n: 1
+
+service:
+  type: ClusterIP
+  name: couchdb
+
+persistence:
+  enabled: true
+  existingClaim: couchdb-pvc
+
+# Disable ingress - we have our own
+ingress:
+  enabled: false
+
+# Turn off clustering completely
+autoSetup:
+  enabled: false
+
+# Use short, simple node names
+erlangFlags:
+  name: couchdb@127.0.0.1
+
+# CORS settings for Obsidian LiveSync
+extraEnvs:
+  - name: COUCHDB_ENABLE_CORS
+    value: "true"
+  - name: COUCHDB_CORS_ORIGINS
+    value: "*"
+  - name: COUCHDB_CORS_CREDENTIALS
+    value: "true"
+  - name: COUCHDB_CORS_METHODS
+    value: "GET, PUT, POST, HEAD, DELETE"
+  - name: COUCHDB_CORS_HEADERS
+    value: "accept, authorization, content-type, origin, referer, x-csrf-token"
+
+# Mount custom local.ini file
+extraVolumes:
+  - name: local-ini
+    configMap:
+      name: couchdb-local-ini
+  - name: init-script
+    configMap:
+      name: couchdb-init-script
+      defaultMode: 0755
+
+extraVolumeMounts:
+  - name: local-ini
+    mountPath: /opt/couchdb/etc/local.d/local.ini
+    subPath: local.ini
+  - name: init-script
+    mountPath: /docker-entrypoint-initdb.d/disable-cluster.sh
+    subPath: disable-cluster.sh
+
+# Define a simple init container to configure the node
+initContainers:
+  - name: configure-single-node
+    image: busybox:latest
+    command: ['sh', '-c', 'echo "Setting up single node mode" && echo "couchdb@127.0.0.1" > /tmp/nodename && cp /tmp/nodename /opt/couchdb-data/nodename']
+    volumeMounts:
+      - name: data
+        mountPath: /opt/couchdb-data

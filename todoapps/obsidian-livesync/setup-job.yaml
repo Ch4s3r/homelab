@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: couchdb-setup-job
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  backoffLimit: 5
+  template:
+    spec:
+      containers:
+      - name: setup
+        image: curlimages/curl:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          # Wait for CouchDB to be ready
+          echo "Waiting for CouchDB to become available..."
+          until curl -s http://admin:obsidianlivesync@couchdb:5984/ > /dev/null; do
+            echo "Waiting for CouchDB..."
+            sleep 5
+          done
+          echo "CouchDB is up! Configuring single node..."
+          
+          # Force single node mode
+          echo "Setting up CouchDB for single node mode..."
+          curl -X POST -H "Content-Type: application/json" \
+            http://admin:obsidianlivesync@couchdb:5984/_cluster_setup \
+            -d '{"action": "finish_cluster"}' && echo ""
+            
+          # Create _users database required by CouchDB
+          echo "Creating system databases..."
+          curl -X PUT http://admin:obsidianlivesync@couchdb:5984/_users && echo ""
+          curl -X PUT http://admin:obsidianlivesync@couchdb:5984/_replicator && echo ""
+          curl -X PUT http://admin:obsidianlivesync@couchdb:5984/_global_changes && echo ""
+          
+          echo "CouchDB setup completed!"
+      restartPolicy: OnFailure

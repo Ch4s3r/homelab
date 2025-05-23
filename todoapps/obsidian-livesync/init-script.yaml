@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: couchdb-init-script
+data:
+  disable-cluster.sh: |
+    #!/bin/bash
+    echo "Disabling cluster setup in vm.args..."
+    # Remove any -name parameter
+    sed -i '/^-name/d' /opt/couchdb/etc/vm.args
+    # Add our simple name
+    echo "-name couchdb@127.0.0.1" >> /opt/couchdb/etc/vm.args
+    echo "Initialization complete!"

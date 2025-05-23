@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: obsidian-livesync-ingress
+spec:
+  ingressClassName: tailscale
+  rules:
+    - host: obsidian-livesync
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: couchdb
+                port:
+                  number: 5984
+  tls:
+    - hosts:
+        - obsidian-livesync

@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: obsidian-livesync
+resources:
+- namespace.yaml
+- pvc.yaml
+- ingress.yaml
+- dns-config.yaml
+- setup-job.yaml
+- local-ini-config.yaml
+- init-script.yaml
+helmCharts:
+- name: couchdb
+  repo: https://apache.github.io/couchdb-helm
+  version: "4.6.0"
+  releaseName: couchdb
+  valuesFile: couchdb-values.yaml
