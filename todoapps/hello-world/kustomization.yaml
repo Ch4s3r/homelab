@@ -3,6 +3,4 @@ kind: Kustomization
 namespace: hello-world
 resources:
 - deployment.yaml
-- service.yaml
-- namespace.yaml
-- ingress.yaml
+- pvc.yaml
