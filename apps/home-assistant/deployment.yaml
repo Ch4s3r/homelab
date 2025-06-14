@@ -14,6 +14,9 @@ spec:
     metadata:
       labels:
         app: home-assistant
+      annotations:
+        config-hash: "{{ checksum of configmap }}"
+        kubectl.kubernetes.io/restartedAt: "2025-06-14T12:05:00Z"
     spec:
       # Enable privileged mode for device access
       securityContext:
@@ -25,19 +28,39 @@ spec:
         - sh
         - -c
         - |
-          # Only create configuration.yaml if it doesn't exist
-          if [ ! -f /config/configuration.yaml ]; then
-            echo "Creating initial configuration.yaml..."
-            cp /tmp/config/configuration.yaml /config/configuration.yaml
-            chmod 644 /config/configuration.yaml
-          else
-            echo "Configuration file already exists, skipping..."
-          fi
+          set -e
+          echo "Initializing Home Assistant configuration..."
           
-          # Create other required files if they don't exist
+          # Create basic files if they don't exist
           touch /config/automations.yaml
           touch /config/scripts.yaml  
           touch /config/scenes.yaml
+          
+          # Always ensure HTTP configuration is present
+          if [ ! -f /config/configuration.yaml ]; then
+            echo "Creating new configuration.yaml..."
+            cp /tmp/config/configuration.yaml /config/configuration.yaml
+          else
+            echo "Configuration file exists, checking HTTP section..."
+            
+            # Check if HTTP section exists
+            if ! grep -q "^http:" /config/configuration.yaml; then
+              echo "Adding HTTP configuration to existing file..."
+              echo "" >> /config/configuration.yaml
+              echo "# HTTP configuration for reverse proxy" >> /config/configuration.yaml
+              cat /tmp/config/http-config.yaml >> /config/configuration.yaml
+            else
+              echo "HTTP section found in configuration"
+              # Check if trusted_proxies includes our cluster CIDR
+              if ! grep -q "10.42.0.0/16" /config/configuration.yaml; then
+                echo "WARNING: HTTP configuration exists but may not include cluster CIDR"
+                echo "Please manually add 10.42.0.0/16 to trusted_proxies in configuration.yaml"
+              fi
+            fi
+          fi
+          
+          chmod 644 /config/configuration.yaml
+          echo "Configuration initialization complete"
         volumeMounts:
         - name: config
           mountPath: /config
