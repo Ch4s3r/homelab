@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: home-assistant
+  namespace: home-assistant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      # Enable privileged mode for device access
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: home-assistant
+        image: ghcr.io/home-assistant/home-assistant:stable
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        env:
+        - name: TZ
+          value: "Europe/Vienna"
+        ports:
+        - containerPort: 8123
+          name: http
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: dbus
+          mountPath: /run/dbus
+          readOnly: true
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        resources:
+          limits:
+            cpu: "2"
+            memory: "2Gi"
+          requests:
+            cpu: "0.5"
+            memory: "1Gi"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8123
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8123
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+      # Use host network for device discovery
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      restartPolicy: Always
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: home-assistant-config-pvc
+      - name: dbus
+        hostPath:
+          path: /run/dbus
+          type: Directory
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
