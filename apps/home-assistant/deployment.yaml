@@ -40,6 +40,7 @@ spec:
           if [ ! -f /config/configuration.yaml ]; then
             echo "Creating new configuration.yaml..."
             cp /tmp/config/configuration.yaml /config/configuration.yaml
+            chown 1000:1000 /config/configuration.yaml
           else
             echo "Configuration file exists, checking HTTP section..."
             
@@ -59,7 +60,10 @@ spec:
             fi
           fi
           
-          chmod 644 /config/configuration.yaml
+          # Ensure proper ownership and permissions
+          chown -R 1000:1000 /config/
+          find /config -type f -exec chmod 644 {} \;
+          find /config -type d -exec chmod 755 {} \;
           echo "Configuration initialization complete"
         volumeMounts:
         - name: config
@@ -67,8 +71,12 @@ spec:
         - name: ha-config
           mountPath: /tmp/config
         securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
+          runAsUser: 0
+          runAsGroup: 0
+          capabilities:
+            add:
+            - CHOWN
+            - FOWNER
       containers:
       - name: home-assistant
         image: ghcr.io/home-assistant/home-assistant:stable
