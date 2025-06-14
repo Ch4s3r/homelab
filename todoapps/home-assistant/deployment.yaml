@@ -16,34 +16,6 @@ spec:
       # Enable privileged mode for device access
       securityContext:
         fsGroup: 1000
-      initContainers:
-      - name: config-init
-        image: busybox:1.35
-        command:
-        - sh
-        - -c
-        - |
-          # Only create configuration.yaml if it doesn't exist
-          if [ ! -f /config/configuration.yaml ]; then
-            echo "Creating initial configuration.yaml..."
-            cp /tmp/config/configuration.yaml /config/configuration.yaml
-            chmod 644 /config/configuration.yaml
-          else
-            echo "Configuration file already exists, skipping..."
-          fi
-          
-          # Create other required files if they don't exist
-          touch /config/automations.yaml
-          touch /config/scripts.yaml  
-          touch /config/scenes.yaml
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: ha-config
-          mountPath: /tmp/config
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
       containers:
       - name: home-assistant
         image: ghcr.io/home-assistant/home-assistant:stable
@@ -103,6 +75,3 @@ spec:
         hostPath:
           path: /etc/localtime
           type: File
-      - name: ha-config
-        configMap:
-          name: home-assistant-config

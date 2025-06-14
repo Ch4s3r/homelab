@@ -1,0 +1,98 @@
+# Home Assistant configuration values
+replicaCount: 1
+
+image:
+  repository: ghcr.io/home-assistant/home-assistant
+  pullPolicy: IfNotPresent
+  tag: ""  # Uses chart appVersion
+
+# Use StatefulSet for stable storage and networking
+controller:
+  type: StatefulSet
+
+# Enable persistent storage
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 10Gi
+  storageClass: "retain-local-path"
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 8080
+
+# Resource limits
+resources:
+  limits:
+    cpu: "2"
+    memory: "2Gi"
+  requests:
+    cpu: "0.5"
+    memory: "1Gi"
+
+# Security context
+podSecurityContext:
+  fsGroup: 1000
+
+securityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+  # Set to true if you need device access for Zigbee/Z-Wave
+  privileged: false
+
+# Enable host networking for device discovery (optional)
+# Uncomment if you need auto-discovery or have USB devices
+# hostNetwork: true
+# dnsPolicy: ClusterFirstWithHostNet
+
+# Environment variables
+env: []
+
+# Configuration
+configuration:
+  enabled: true
+  forceInit: false
+  trusted_proxies:
+    - "10.0.0.0/8"
+    - "172.16.0.0/12"
+    - "192.168.0.0/16"
+    - "127.0.0.0/8"
+  templateConfig: |-
+    # Loads default set of integrations. Do not remove.
+    default_config:
+
+    # Text to speech
+    tts:
+      - platform: google_translate
+
+    http:
+      use_x_forwarded_for: true
+      trusted_proxies:
+        {{- range .Values.configuration.trusted_proxies }}
+        - {{ . }}
+        {{- end }}
+
+    # Load frontend themes from the themes folder
+    frontend:
+      themes: !include_dir_merge_named themes
+
+    automation: !include automations.yaml
+    script: !include scripts.yaml
+    scene: !include scenes.yaml
+
+# Disable ingress since we're using external ingress
+ingress:
+  enabled: false
+
+# Node selection (optional)
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# ServiceMonitor for Prometheus (optional)
+serviceMonitor:
+  enabled: false
