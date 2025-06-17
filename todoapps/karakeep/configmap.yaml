@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: karakeep-config
+  namespace: karakeep
+data:
+  NEXTAUTH_URL: "https://karakeep.ts.net"
+  DATA_DIR: "/data"
+  MEILI_ADDR: "http://localhost:7700"
+  BROWSER_WEB_URL: "http://localhost:9222"
+  NODE_ENV: "production"
+  KARAKEEP_VERSION: "release"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: karakeep-secrets
+  namespace: karakeep
+type: Opaque
+stringData:
+  NEXTAUTH_SECRET: "change-this-to-a-random-string-from-openssl-rand-base64-36"
+  MEILI_MASTER_KEY: "change-this-to-another-random-string"

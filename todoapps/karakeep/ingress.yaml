@@ -1,21 +1,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: home-assistant-ingress
-  namespace: home-assistant
+  name: karakeep-ingress
+  namespace: karakeep
 spec:
   ingressClassName: tailscale
   rules:
-    - host: home-assistant
+    - host: karakeep
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: home-assistant
+                name: karakeep
                 port:
-                  number: 8123
+                  number: 3000
   tls:
     - hosts:
-        - home-assistant
+        - karakeep

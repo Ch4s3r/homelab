@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: karakeep
+  namespace: karakeep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: karakeep
+  template:
+    metadata:
+      labels:
+        app: karakeep
+    spec:
+      containers:
+      # Main Karakeep application
+      - name: karakeep
+        image: ghcr.io/karakeep-app/karakeep:release
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: NEXTAUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              name: karakeep-config
+              key: NEXTAUTH_URL
+        - name: DATA_DIR
+          valueFrom:
+            configMapKeyRef:
+              name: karakeep-config
+              key: DATA_DIR
+        - name: MEILI_ADDR
+          valueFrom:
+            configMapKeyRef:
+              name: karakeep-config
+              key: MEILI_ADDR
+        - name: BROWSER_WEB_URL
+          valueFrom:
+            configMapKeyRef:
+              name: karakeep-config
+              key: BROWSER_WEB_URL
+        - name: NODE_ENV
+          valueFrom:
+            configMapKeyRef:
+              name: karakeep-config
+              key: NODE_ENV
+        - name: NEXTAUTH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: karakeep-secrets
+              key: NEXTAUTH_SECRET
+        - name: MEILI_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: karakeep-secrets
+              key: MEILI_MASTER_KEY
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 5
+
+      # Meilisearch for full-text search
+      - name: meilisearch
+        image: getmeili/meilisearch:v1.6
+        ports:
+        - containerPort: 7700
+          name: meilisearch
+        env:
+        - name: MEILI_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: karakeep-secrets
+              key: MEILI_MASTER_KEY
+        - name: MEILI_NO_ANALYTICS
+          value: "true"
+        - name: MEILI_ENV
+          value: "production"
+        volumeMounts:
+        - name: meilisearch-data
+          mountPath: /meili_data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "300m"
+
+      # Chrome browser for web crawling
+      - name: chrome
+        image: gcr.io/zenika-hub/alpine-chrome:123
+        ports:
+        - containerPort: 9222
+          name: chrome
+        args:
+        - --no-sandbox
+        - --disable-dev-shm-usage
+        - --disable-gpu
+        - --disable-software-rasterizer
+        - --disable-background-timer-throttling
+        - --disable-backgrounding-occluded-windows
+        - --disable-renderer-backgrounding
+        - --disable-features=TranslateUI
+        - --disable-ipc-flooding-protection
+        - --remote-debugging-address=0.0.0.0
+        - --remote-debugging-port=9222
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "300m"
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: karakeep-data
+      - name: meilisearch-data
+        persistentVolumeClaim:
+          claimName: meilisearch-data
