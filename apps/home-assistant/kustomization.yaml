@@ -10,3 +10,6 @@ resources:
 - service.yaml
 - pvc.yaml
 - ingress.yaml
+images:
+  - name: ghcr.io/home-assistant/home-assistant
+    newTag: "2025.7.1"
