@@ -18,4 +18,8 @@ patches:
       - op: add
         path: /spec/ingressClassName
         value: tailscale
-
+      - op: add
+        path: /spec/tls
+        value:
+          - hosts:
+              - karakeep
