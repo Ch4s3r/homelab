@@ -17,8 +17,8 @@
     {
       "customType": "regex",
       "description": "Update GitHub releases from all YAML files",
-      "fileMatch": [
-        ".*\\.yaml$"
+      "managerFilePatterns": [
+        "/.*\\.yaml$/"
       ],
       "matchStrings": [
         "https://github.com/(?<depName>[^ /]+/[^ /]+)/releases/download/(?<currentValue>[^/]+)/"
@@ -29,8 +29,8 @@
     {
       "customType": "regex",
       "description": "Update versions from renovate comments in YAML",
-      "fileMatch": [
-        ".*\\.yaml$"
+      "managerFilePatterns": [
+        "/.*\\.yaml$/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[^ ]+) depName=(?<depName>[^ ]+)\\s+(value|version): (?<currentValue>[^\\n]+)"
