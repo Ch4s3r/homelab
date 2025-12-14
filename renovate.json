@@ -6,28 +6,6 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update GitHub release references in kustomization.yaml",
-      "managerFilePatterns": [
-        "//kustomization.yaml//"
-      ],
-      "matchStrings": [
-        "https:\\/\\/github\\.com\\/(?<depName>.*\\/.*?)\\/releases\\/download\\/(?<currentValue>.*?)\\/"
-      ],
-      "datasourceTemplate": "github-releases"
-    },
-    {
-      "customType": "regex",
-      "description": "Update GitHub tag references in kustomization.yaml",
-      "managerFilePatterns": [
-        "//kustomization.yaml//"
-      ],
-      "matchStrings": [
-        "https:\\/\\/raw.githubusercontent.com\\/(?<depName>[^\\/]*\\/[^\\/]*)\\/(?<currentValue>.*?)\\/"
-      ],
-      "datasourceTemplate": "github-tags"
-    },
-    {
-      "customType": "regex",
       "managerFilePatterns": [
         "//deployment.yaml//"
       ],
@@ -35,6 +13,46 @@
         "image: (?<depName>.*?):(?<currentValue>.*?)@(?<currentDigest>sha256:[a-f0-9]+)"
       ],
       "datasourceTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Update GitHub releases from all YAML files",
+      "fileMatch": [
+        ".*\\.yaml$"
+      ],
+      "matchStrings": [
+        "https://github.com/(?<depName>[^ /]+/[^ /]+)/releases/download/(?<currentValue>[^/]+)/"
+      ],
+      "datasourceTemplate": "github-releases",
+      "versioningTemplate": "docker"
+    },
+    {
+      "customType": "regex",
+      "description": "Update versions from renovate comments in YAML",
+      "fileMatch": [
+        ".*\\.yaml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[^ ]+) depName=(?<depName>[^ ]+)\\s+(value|version): (?<currentValue>[^\\n]+)"
+      ],
+      "versioningTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "Auto-merge minor and patch updates",
+      "matchUpdateTypes": [
+        "minor",
+        "patch"
+      ],
+      "automerge": true
+    },
+    {
+      "description": "Require manual approval for major updates",
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "automerge": false
     }
   ]
 }
