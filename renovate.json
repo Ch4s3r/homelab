@@ -3,6 +3,8 @@
   "extends": [
     "config:recommended"
   ],
+  "prConcurrentLimit": 0,
+  "prCreationLimit": 0,
   "customManagers": [
     {
       "customType": "regex",
