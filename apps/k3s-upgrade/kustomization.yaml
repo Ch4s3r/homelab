@@ -9,7 +9,7 @@ resources:
 
 images:
 - name: rancher/k3s-upgrade
-  newTag: v1.33.5-k3s1
+  newTag: v1.34.2-k3s1
 
 patches:
 - target:
@@ -21,4 +21,4 @@ patches:
     - op: replace
       path: /spec/version
       # renovate: datasource=docker depName=rancher/k3s-upgrade
-      value: v1.33.5-k3s1
+      value: v1.34.2-k3s1
