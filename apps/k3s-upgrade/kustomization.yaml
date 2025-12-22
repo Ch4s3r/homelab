@@ -20,5 +20,5 @@ patches:
   patch: |-
     - op: replace
       path: /spec/version
-      # renovate: datasource=docker depName=rancher/k3s-upgrade
+      # renovate: datasource=docker depName=rancher/k3s-upgrade versioning=docker
       value: v1.34.3-k3s1

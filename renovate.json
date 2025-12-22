@@ -35,9 +35,11 @@
         "/.*\\.yaml$/"
       ],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)\\s+(?:value|version):\\s*(?<currentValue>\\S+)"
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+) versioning=(?<versioning>\\S+)\\s+[\\s\\S]*?(?<key>\\w+):\\s*(?<currentValue>\\S+)"
       ],
-      "versioningTemplate": "docker"
+      "datasourceTemplate": "{{{datasource}}}",
+      "depNameTemplate": "{{{depName}}}",
+      "versioningTemplate": "{{{versioning}}}"
     }
   ],
   "packageRules": [
