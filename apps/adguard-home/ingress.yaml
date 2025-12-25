@@ -15,7 +15,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: adguard-home
+                name: adguard-home-http
                 port:
                   number: 80
   tls:
