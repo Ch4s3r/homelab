@@ -1,23 +1,23 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: adguard-home
+  name: adguard-home-dot
   namespace: adguard-home
   labels:
     app: adguard-home
 spec:
   ingressClassName: tailscale
   rules:
-    - host: adguard-home
-      http:
+    - host: adguard-home-dot
+      tls:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: adguard-home-http
+                name: adguard-home-dns
                 port:
-                  number: 80
+                  number: 853
   tls:
     - hosts:
-        - adguard-home
+        - adguard-home-dot
