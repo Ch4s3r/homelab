@@ -9,7 +9,7 @@ spec:
   ingressClassName: tailscale
   rules:
     - host: adguard-home-dot
-      tls:
+      http:
         paths:
           - path: /
             pathType: Prefix
