@@ -1,0 +1,52 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: adguard-home
+
+resources:
+  - namespace.yaml
+  - secret.yaml
+  - ingress.yaml
+
+helmCharts:
+  - name: adguard-home
+    releaseName: adguard-home
+    repo: https://helm-charts.rm3l.org
+    version: 0.24.0
+    valuesInline:
+      image:
+        # renovate: datasource=docker depName=adguard/adguardhome versioning=docker
+        tag: v0.107.51
+      bootstrapEnabled: true
+      bootstrapConfig:
+        bind_host: "0.0.0.0"
+        bind_port: 80
+        language: "en"
+        dns:
+          bind_hosts:
+            - "0.0.0.0"
+          port: 53
+          protection_enabled: true
+          filtering_enabled: true
+          upstream_dns:
+            - "https://dns.cloudflare.com/dns-query"
+            - "tls://1dot1dot1dot1.cloudflare-dns.com"
+      persistence:
+        enabled: true
+        volumeClaimSpec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 1Gi
+      services:
+        http:
+          type: ClusterIP
+          port: 80
+      resources:
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
