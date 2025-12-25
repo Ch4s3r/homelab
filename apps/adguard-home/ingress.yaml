@@ -18,6 +18,16 @@ spec:
                 name: adguard-home-http
                 port:
                   number: 80
+    - host: adguard-home-dot
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: adguard-home-dns
+                port:
+                  number: 853
   tls:
     - hosts:
         - adguard-home
