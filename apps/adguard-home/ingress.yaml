@@ -31,3 +31,4 @@ spec:
   tls:
     - hosts:
         - adguard-home
+        - adguard-home-dot
