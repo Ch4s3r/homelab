@@ -8,4 +8,4 @@ resources:
 - ingress.yaml
 images:
 - name: vaultwarden/server
-  newTag: "1.34.3-alpine"
+  newTag: "1.35.0-alpine"
