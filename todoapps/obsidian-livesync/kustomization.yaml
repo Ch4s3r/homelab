@@ -12,6 +12,6 @@ resources:
 helmCharts:
 - name: couchdb
   repo: https://apache.github.io/couchdb-helm
-  version: "4.6.2"
+  version: "4.6.3"
   releaseName: couchdb
   valuesFile: couchdb-values.yaml
