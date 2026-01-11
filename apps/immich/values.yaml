@@ -1,0 +1,64 @@
+# Immich Helm Chart Values
+# Reference: https://github.com/immich-app/immich-charts
+
+# Container image tag override and database configuration
+controllers:
+  main:
+    containers:
+      main:
+        image:
+          # renovate: datasource=docker depName=ghcr.io/immich-app/immich-server versioning=semver
+          tag: v1.127.0
+        env:
+          # Database configuration - uses CloudNative-PG cluster
+          DB_HOSTNAME: immich-database-rw
+          DB_PORT: "5432"
+          DB_DATABASE_NAME: immich
+          DB_USERNAME: immich
+        envFrom:
+          - secretRef:
+              name: immich-secrets
+
+immich:
+  persistence:
+    library:
+      existingClaim: immich-library
+
+# Enable built-in Valkey (Redis alternative) for caching
+valkey:
+  enabled: true
+  persistence:
+    data:
+      enabled: true
+      type: persistentVolumeClaim
+      size: 1Gi
+      storageClass: local-path
+      accessMode: ReadWriteOnce
+
+# Immich Server configuration
+server:
+  enabled: true
+  ingress:
+    main:
+      enabled: false
+
+# Machine Learning component
+machine-learning:
+  enabled: true
+  controllers:
+    main:
+      containers:
+        main:
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 4Gi
+  persistence:
+    cache:
+      enabled: true
+      type: persistentVolumeClaim
+      size: 10Gi
+      storageClass: local-path
+      accessMode: ReadWriteOnce

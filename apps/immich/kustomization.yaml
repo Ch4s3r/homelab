@@ -4,16 +4,16 @@ kind: Kustomization
 namespace: immich
 
 resources:
-  - immich-pvc.yaml
-  - postgres-deployment.yaml
-  - postgres-service.yaml
-  - postgres-init-scripts.yaml
-  - postgres-pvc.yaml
+  - namespace.yaml
+  - pvc.yaml
+  - postgres-cluster.yaml
+  - secret.yaml
   - ingress.yaml
 
 helmCharts:
   - name: immich
     releaseName: immich
     repo: oci://ghcr.io/immich-app/immich-charts
-    version: "0.10.3"
-    valuesFile: immich-values.yaml
+    version: 0.10.3
+    namespace: immich
+    valuesFile: values.yaml
