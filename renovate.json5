@@ -1,7 +1,8 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:best-practices"
+    "config:best-practices",
+    ":automergeStableNonMajor"
   ],
   "kubernetes": {
     "managerFilePatterns": [
@@ -35,23 +36,6 @@
       "datasourceTemplate": "{{{datasource}}}",
       "depNameTemplate": "{{{depName}}}",
       "versioningTemplate": "{{{versioning}}}"
-    }
-  ],
-  "packageRules": [
-    {
-      "description": "Auto-merge minor and patch updates",
-      "matchUpdateTypes": [
-        "minor",
-        "patch"
-      ],
-      "automerge": true
-    },
-    {
-      "description": "Require manual approval for major updates",
-      "matchUpdateTypes": [
-        "major"
-      ],
-      "automerge": false
     }
   ]
 }
