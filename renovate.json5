@@ -1,21 +1,16 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended"
+    "config:best-practices"
   ],
+  "kubernetes": {
+    "fileMatch": [
+      "\\.yaml$"
+    ]
+  },
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
   "customManagers": [
-    {
-      "customType": "regex",
-      "managerFilePatterns": [
-        "//deployment.yaml//"
-      ],
-      "matchStrings": [
-        "image: (?<depName>.*?):(?<currentValue>.*?)@(?<currentDigest>sha256:[a-f0-9]+)"
-      ],
-      "datasourceTemplate": "docker"
-    },
     {
       "customType": "regex",
       "description": "Update GitHub releases from all YAML files",
