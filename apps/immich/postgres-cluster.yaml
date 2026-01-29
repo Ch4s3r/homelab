@@ -10,12 +10,10 @@ spec:
     size: 10Gi
     storageClass: local-path
 
-  # Use the cloudnative-vectorchord image which includes the vectorchord extension
-  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:18
+  imageName: ghcr.io/cloudnative-pg/postgresql:16
 
   postgresql:
-    shared_preload_libraries:
-      - "vchord.so"
+    shared_preload_libraries: []
 
   bootstrap:
     initdb:
@@ -23,7 +21,8 @@ spec:
       owner: immich
       secret:
         name: immich-postgres-credentials
-      postInitApplicationSQL:
-        # Commands based on: https://immich.app/docs/administration/postgres-standalone/#without-superuser-permission
-        - CREATE EXTENSION vchord CASCADE;
-        - CREATE EXTENSION earthdistance CASCADE;
+      postInitSQL:
+        - CREATE EXTENSION IF NOT EXISTS vector;
+        - CREATE EXTENSION IF NOT EXISTS cube;
+        - CREATE EXTENSION IF NOT EXISTS earthdistance;
+        - ALTER USER immich WITH SUPERUSER;
