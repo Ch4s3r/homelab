@@ -6,6 +6,3 @@ resources:
 - pvc.yaml
 - service.yaml
 - ingress.yaml
-images:
-- name: vaultwarden/server
-  newTag: "1.35.2-alpine"

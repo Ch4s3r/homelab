@@ -7,10 +7,6 @@ resources:
 - https://github.com/rancher/system-upgrade-controller/releases/download/v0.18.0/system-upgrade-controller.yaml
 - server-plan.yaml
 
-images:
-- name: rancher/k3s-upgrade
-  newTag: v1.35.0-k3s1
-
 patches:
 - target:
     group: upgrade.cattle.io
