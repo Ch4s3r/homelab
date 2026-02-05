@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: volume-test
-        image: nginx:1.29.4@sha256:c881927c4077710ac4b1da63b83aa163937fb47457950c267d92f7e4dedf4aec
+        image: nginx:1.29.5@sha256:ccc6e62a821df60e2464ba7589baefd857864ef9e41eec14c675d90e5a6caf3f
         imagePullPolicy: IfNotPresent
         resources:
           limits:
