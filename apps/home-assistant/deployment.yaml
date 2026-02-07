@@ -79,7 +79,7 @@ spec:
             - FOWNER
       containers:
       - name: home-assistant
-        image: ghcr.io/home-assistant/home-assistant:2025.12.5
+        image: ghcr.io/home-assistant/home-assistant:2026.2.1@sha256:17441c45ba14560b4ef727ee06aac4d605cf0dc0625fc4f2e043cb2551d72749
         imagePullPolicy: Always
         securityContext:
           privileged: true
