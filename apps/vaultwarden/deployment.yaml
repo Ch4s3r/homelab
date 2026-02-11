@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: vaultwarden
-        image: vaultwarden/server:1.35.2-alpine
+        image: vaultwarden/server:1.35.3-alpine@sha256:c40957876ec13c1cb0d2b08f86e8f738e6d06f7460bad9cdae216cded174c10d
         resources:
           limits:
             cpu: "0.5"
