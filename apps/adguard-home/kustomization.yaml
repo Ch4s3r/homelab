@@ -17,7 +17,7 @@ helmCharts:
     valuesInline:
       image:
         # renovate: datasource=docker depName=adguard/adguardhome versioning=docker
-        tag: v0.107.71
+        tag: v0.107.72
       bootstrapEnabled: true
       bootstrapConfig:
         bind_host: "0.0.0.0"
