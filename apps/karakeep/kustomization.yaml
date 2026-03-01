@@ -7,7 +7,7 @@ helmCharts:
   - name: karakeep
     releaseName: karakeep
     repo: https://karakeep-app.github.io/helm-charts
-    version: 0.27.0
+    version: 0.31.0
     valuesInline:
       applicationHost: karakeep
       controllers:
