@@ -14,6 +14,6 @@ helmCharts:
   - name: immich
     releaseName: immich
     repo: oci://ghcr.io/immich-app/immich-charts
-    version: 0.10.3
+    version: 0.11.1
     namespace: immich
     valuesFile: values.yaml
