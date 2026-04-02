@@ -16,7 +16,7 @@ helmCharts:
             karakeep:
               image:
                 # renovate: datasource=docker depName=ghcr.io/karakeep-app/karakeep versioning=semver
-                tag: 0.30.0
+                tag: 0.31.0
 patches:
   - target:
       kind: Ingress
