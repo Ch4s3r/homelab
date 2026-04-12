@@ -3,8 +3,6 @@ kind: Ingress
 metadata:
   name: argocd-ingress
   namespace: argocd
-  annotations:
-    tailscale.com/funnel: "true"
 spec:
   ingressClassName: tailscale
   rules:
@@ -21,3 +19,27 @@ spec:
   tls:
     - hosts:
         - argocd
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd-webhook-ingress
+  namespace: argocd
+  annotations:
+    tailscale.com/funnel: "true"
+spec:
+  ingressClassName: tailscale
+  rules:
+    - host: argocd-webhook
+      http:
+        paths:
+          - path: /api/webhook
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - argocd-webhook
