@@ -5,7 +5,6 @@ namespace: cnpg-system
 
 resources:
   - namespace.yaml
-  - github.com/cloudnative-pg/cloudnative-pg/config/crd?ref=v1.28.0
 
 helmCharts:
   - name: cloudnative-pg
