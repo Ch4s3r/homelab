@@ -47,6 +47,7 @@ newrelic-k8s-metrics-adapter:
 
 global:
   cluster: "MacMini K3s"
+  region: EU
   licenseKey: ""
   customSecretName: "newrelic-secret"
   customSecretLicenseKey: "licenseKey"
