@@ -14,7 +14,7 @@ patches:
       metadata:
         name: unused
         annotations:
-          argocd.argoproj.io/sync-options: Replace=true
+          argocd.argoproj.io/sync-options: ServerSideApply=true
     target:
       kind: CustomResourceDefinition
 
