@@ -16,8 +16,8 @@ nri-kube-events:
   enabled: true
 
 newrelic-logging:
-  enabled: true
-  lowDataMode: true
+  # disabled: Fluent Bit uses jemalloc which does not support Asahi Linux's 16KB memory pages
+  enabled: false
 
 newrelic-pixie:
   enabled: false
@@ -37,7 +37,8 @@ newrelic-prometheus-agent:
         enabled: false
 
 nr-ebpf-agent:
-  enabled: true
+  # disabled: Asahi Linux kernel headers (arm64-6.18.0) not available in New Relic's download servers
+  enabled: false
 
 k8s-agents-operator:
   enabled: true
