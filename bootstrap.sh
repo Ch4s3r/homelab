@@ -26,7 +26,10 @@ export KUBECONFIG=~/.kube/macmini
 # k3d cluster create -i latest
 kubectl annotate storageclass local-path defaultVolumeType=local
 kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+# Render and apply ArgoCD via the self-managed Helm chart in apps/argocd/
+# (requires helm; install with: nix shell nixpkgs#kubernetes-helm)
+nix shell nixpkgs#kubernetes-helm --command kubectl kustomize apps/argocd --enable-helm | kubectl apply --server-side -f -
+# Get initial admin password (only present on first install, removed once changed)
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
 kubectl create namespace tailscale
