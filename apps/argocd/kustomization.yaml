@@ -5,4 +5,12 @@ namespace: argocd
 
 resources:
   - applicationset.yaml
-  - argocd-cm.yaml
+
+helmCharts:
+  - name: argo-cd
+    releaseName: argocd
+    repo: https://argoproj.github.io/argo-helm
+    namespace: argocd
+    # renovate: datasource=helm depName=argo-cd registryUrl=https://argoproj.github.io/argo-helm versioning=semver
+    version: 4.33.2
+    valuesFile: values.yaml
