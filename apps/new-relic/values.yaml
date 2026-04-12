@@ -16,8 +16,8 @@ nri-kube-events:
   enabled: true
 
 newrelic-logging:
-  # disabled: Fluent Bit uses jemalloc which does not support Asahi Linux's 16KB memory pages
-  enabled: false
+  enabled: true
+  lowDataMode: true
 
 newrelic-pixie:
   enabled: false
