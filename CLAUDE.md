@@ -74,7 +74,7 @@ resources:
   - github.com/cloudnative-pg/cloudnative-pg/config/crd?ref=v1.28.0
 ```
 
-A strategic merge patch in the same file adds `argocd.argoproj.io/sync-options: ServerSideApply=true` to all `CustomResourceDefinition` resources. This is required because CNPG CRDs are large enough to hit `kubectl apply`'s annotation size limit; server-side apply avoids that without the destructiveness of `Replace=true`.
+`ServerSideApply=true` is set globally in `bootstrap/applicationset.yaml` for all apps, which avoids `kubectl apply` annotation size limit issues (especially relevant for large CRDs like CNPG's).
 
 Renovate's built-in kustomize manager natively tracks `github.com/…?ref=version` URLs and auto-updates the `?ref=` when a new CNPG release is published. The Helm chart `version:` is tracked separately via a `# renovate:` comment using the existing comment-based manager. The two versions must stay in sync (chart `0.x.0` deploys operator `1.x.0`).
 
