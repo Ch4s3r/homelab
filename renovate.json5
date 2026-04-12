@@ -4,7 +4,9 @@
     "config:best-practices",
     ":automergeStableNonMajor"
   ],
+  "automergeType": "pr",
   "automergeStrategy": "squash",
+  "platformAutomerge": true,
   "kubernetes": {
     "managerFilePatterns": [
       "/\\.yaml$/"
