@@ -37,8 +37,8 @@ newrelic-prometheus-agent:
         enabled: false
 
 nr-ebpf-agent:
-  # disabled: Asahi Linux kernel headers (arm64-6.18.0) not available in New Relic's download servers
-  enabled: false
+  # kernel-devel not packaged for the +16k Asahi variant; relies on BTF at /sys/kernel/btf/vmlinux
+  enabled: true
 
 k8s-agents-operator:
   enabled: true
