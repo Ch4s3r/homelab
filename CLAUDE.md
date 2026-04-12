@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-ArgoCD-based GitOps homelab running K3s on a Mac Mini M2 (ARM64, Asahi Linux). An `ApplicationSet` in `bootstrap/applicationset.yaml` auto-discovers every directory under `apps/` and deploys it as an ArgoCD Application with auto-sync, prune, and self-heal enabled.
+ArgoCD-based GitOps homelab running K3s on a Mac Mini M2 (ARM64, Asahi Linux). An `ApplicationSet` in `apps/argocd/applicationset.yaml` auto-discovers every directory under `apps/` and deploys it as an ArgoCD Application with auto-sync, prune, and self-heal enabled.
 
 **Do not make changes directly with `kubectl`. All changes must go through Git** — ArgoCD will reconcile them automatically once merged to `main`.
 
