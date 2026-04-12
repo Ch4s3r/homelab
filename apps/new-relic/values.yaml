@@ -37,8 +37,9 @@ newrelic-prometheus-agent:
         enabled: false
 
 nr-ebpf-agent:
-  # kernel-devel not packaged for the +16k Asahi variant; relies on BTF at /sys/kernel/btf/vmlinux
-  enabled: true
+  # incompatible with Asahi Linux: uses BCC (requires kernel headers at runtime),
+  # kernel-devel is not packaged for the +16k page variant, and BTF/CO-RE fallback is not supported
+  enabled: false
 
 k8s-agents-operator:
   enabled: true
