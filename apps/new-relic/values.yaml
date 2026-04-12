@@ -1,0 +1,57 @@
+newrelic-infrastructure:
+  enabled: true
+
+nri-prometheus:
+  enabled: false
+
+nri-metadata-injection:
+  enabled: true
+
+kube-state-metrics:
+  enabled: true
+  image:
+    tag: v2.13.0
+
+nri-kube-events:
+  enabled: true
+
+newrelic-logging:
+  enabled: true
+  lowDataMode: true
+
+newrelic-pixie:
+  enabled: false
+
+pixie-chart:
+  enabled: false
+
+newrelic-infra-operator:
+  enabled: false
+
+newrelic-prometheus-agent:
+  enabled: true
+  lowDataMode: true
+  config:
+    kubernetes:
+      integrations_filter:
+        enabled: false
+
+nr-ebpf-agent:
+  enabled: true
+
+k8s-agents-operator:
+  enabled: true
+
+newrelic-k8s-metrics-adapter:
+  enabled: false
+
+global:
+  cluster: "MacMini K3s"
+  licenseKey: ""
+  customSecretName: "newrelic-secret"
+  customSecretLicenseKey: "licenseKey"
+  lowDataMode: true
+  privileged: true
+
+integrations_config:
+  configMapName: nri-integration-cfg-example

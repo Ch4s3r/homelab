@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: newrelic
+helmCharts:
+- name: nri-bundle
+  repo: https://helm-charts.newrelic.com
+  releaseName: newrelic-bundle
+  # renovate: datasource=helm depName=nri-bundle registryUrl=https://helm-charts.newrelic.com versioning=semver
+  version: "7.0.0"
+  valuesFile: values.yaml
+resources:
+- namespace.yaml
+- secret.yaml
+- nri-integration-cfg-example.yaml
