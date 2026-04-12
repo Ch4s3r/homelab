@@ -6,7 +6,6 @@
   ],
   "automergeType": "pr",
   "automergeStrategy": "squash",
-  "platformAutomerge": true,
   "kubernetes": {
     "managerFilePatterns": [
       "/\\.yaml$/"
