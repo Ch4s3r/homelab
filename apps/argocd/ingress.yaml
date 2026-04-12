@@ -3,6 +3,8 @@ kind: Ingress
 metadata:
   name: argocd-ingress
   namespace: argocd
+  annotations:
+    tailscale.com/funnel: "true"
 spec:
   ingressClassName: tailscale
   rules:
