@@ -27,8 +27,7 @@ export KUBECONFIG=~/.kube/macmini
 kubectl annotate storageclass local-path defaultVolumeType=local
 kubectl create namespace argocd
 # Render and apply ArgoCD via the self-managed Helm chart in apps/argocd/
-# (requires helm; install with: nix shell nixpkgs#kubernetes-helm)
-nix shell nixpkgs#kubernetes-helm --command kubectl kustomize apps/argocd --enable-helm | kubectl apply --server-side -f -
+kubectl kustomize apps/argocd --enable-helm | kubectl apply --server-side -f -
 # Get initial admin password (only present on first install, removed once changed)
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
