@@ -10,5 +10,7 @@ helmCharts:
   valuesFile: values.yaml
 resources:
 - namespace.yaml
-- secret.yaml
 - nri-integration-cfg-example.yaml
+
+generators:
+- secret-generator.yaml

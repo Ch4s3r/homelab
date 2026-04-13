@@ -19,6 +19,31 @@ Add the following to your tailnet ACL at https://login.tailscale.com/admin/acls:
 
 Without this, the `tailscale.com/funnel: "true"` annotation on the ingress will have no effect.
 
+## Secrets (ksops + age)
+
+Secrets are encrypted with [sops](https://github.com/getsops/sops) + [age](https://github.com/FiloSottile/age) and decrypted at deploy time by [ksops](https://github.com/viaduct-ai/kustomize-sops) running in the ArgoCD repo-server.
+
+The age private key is never committed to Git. Apply it once to bootstrap:
+
+```bash
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ksops-age-key
+  namespace: argocd
+stringData:
+  keys.txt: |
+    AGE-SECRET-KEY-<your-private-key>
+EOF
+```
+
+To edit an encrypted secret:
+
+```bash
+sops apps/<app>/secret.sops.yaml
+```
+
 ## GitHub webhook
 
 Once the `argocd-webhook` ingress is live, add a webhook in the GitHub repo settings:
