@@ -24,11 +24,16 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.path.basename}}'
+      ignoreDifferences:
+        - group: apps
+          kind: StatefulSet
+          jsonPointers:
+            - /spec/replicas
       syncPolicy:
         syncOptions:
         - CreateNamespace=true
         - ServerSideApply=true
-        automated: 
+        automated:
           prune: true
           selfHeal: true
         retry:
