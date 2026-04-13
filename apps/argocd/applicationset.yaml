@@ -24,6 +24,18 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{.path.basename}}'
+      ignoreDifferences:
+        - group: apps
+          kind: StatefulSet
+          jsonPointers:
+            - /spec/volumeClaimTemplates/0/apiVersion
+            - /spec/volumeClaimTemplates/0/kind
+            - /spec/volumeClaimTemplates/0/status
+            - /spec/volumeClaimTemplates/0/spec/volumeMode
+            - /spec/volumeClaimTemplates/1/apiVersion
+            - /spec/volumeClaimTemplates/1/kind
+            - /spec/volumeClaimTemplates/1/status
+            - /spec/volumeClaimTemplates/1/spec/volumeMode
       syncPolicy:
         syncOptions:
         - CreateNamespace=true
