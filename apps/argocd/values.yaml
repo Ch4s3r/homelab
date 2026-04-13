@@ -7,7 +7,7 @@ configs:
 repoServer:
   env:
     - name: PATH
-      value: /ksops/usr/local/bin:$(PATH)
+      value: /ksops/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
   volumes:
     - name: ksops-image
