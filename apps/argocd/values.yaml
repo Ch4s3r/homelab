@@ -6,6 +6,8 @@ configs:
 
 repoServer:
   env:
+    - name: PATH
+      value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/ksops/usr/local/bin
     - name: SOPS_AGE_KEY_FILE
       value: /home/argocd/.config/sops/age/keys.txt
 
@@ -21,8 +23,7 @@ repoServer:
 
   volumeMounts:
     - name: ksops-image
-      mountPath: /usr/local/bin/ksops
-      subPath: usr/local/bin/ksops
+      mountPath: /ksops
       readOnly: true
     - name: ksops-age-key
       mountPath: /home/argocd/.config/sops/age/keys.txt
