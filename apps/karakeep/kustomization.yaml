@@ -13,6 +13,7 @@ helmCharts:
       applicationHost: karakeep
       controllers:
         karakeep:
+          replicas: 1
           containers:
             karakeep:
               image:
