@@ -3,8 +3,9 @@ kind: Kustomization
 namespace: pi-hole
 resources:
   - namespace.yaml
-  - secret.yaml
   - ingress.yaml
+generators:
+  - secret-generator.yaml
 helmCharts:
   - name: pihole
     namespace: pi-hole

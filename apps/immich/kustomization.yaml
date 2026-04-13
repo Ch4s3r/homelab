@@ -7,7 +7,9 @@ resources:
   - namespace.yaml
   - pvc.yaml
   - postgres-cluster.yaml
-  - secret.yaml
+
+generators:
+  - secret-generator.yaml
   - ingress.yaml
 
 helmCharts:

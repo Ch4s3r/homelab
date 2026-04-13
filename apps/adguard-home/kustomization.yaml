@@ -5,9 +5,10 @@ namespace: adguard-home
 
 resources:
   - namespace.yaml
-  - secret.yaml
   - ingress.yaml
   - ingress.dot.yaml
+generators:
+  - secret-generator.yaml
 
 helmCharts:
   - name: adguard-home
