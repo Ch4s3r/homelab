@@ -7,7 +7,7 @@ configs:
 repoServer:
   env:
     - name: PATH
-      value: /ksops/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/ksops/usr/local/bin
     - name: SOPS_AGE_KEY_FILE
       value: /home/argocd/.config/sops/age/keys.txt
 
