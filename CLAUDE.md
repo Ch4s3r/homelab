@@ -42,6 +42,8 @@ helmCharts:
 
 ArgoCD is configured with `--enable-helm` so Kustomize can render Helm charts at sync time.
 
+**Never use kustomize `patches:`.** Fix issues via Helm values (`valuesInline` or `valuesFile`) or chart configuration instead.
+
 ## Ingress
 
 All apps use Tailscale ingress:
