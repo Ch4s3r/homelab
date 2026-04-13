@@ -5,6 +5,7 @@ resources:
 - namespace.yaml
 helmCharts:
   - name: karakeep
+    namespace: karakeep
     releaseName: karakeep
     repo: https://karakeep-app.github.io/helm-charts
     version: 0.31.0

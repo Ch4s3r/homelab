@@ -11,6 +11,7 @@ resources:
 
 helmCharts:
   - name: adguard-home
+    namespace: adguard-home
     releaseName: adguard-home
     repo: https://helm-charts.rm3l.org
     version: 0.24.0

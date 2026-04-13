@@ -36,9 +36,11 @@ helmCharts:
     repo: https://chart-repo-url
     version: "1.0.0"
     releaseName: release-name
-    namespace: app-namespace
+    namespace: app-namespace   # REQUIRED: sets .Release.Namespace in helm template
     valuesFile: values.yaml   # or use valuesInline:
 ```
+
+**Always set `namespace:` in every `helmCharts` entry** — without it, `.Release.Namespace` defaults to the ArgoCD repo-server namespace (`argocd`), causing charts that embed the namespace in job args, service DNS names, or RBAC rules to point at the wrong namespace. The top-level kustomization `namespace:` only patches `metadata.namespace` after rendering; it does not affect `.Release.Namespace` during Helm rendering.
 
 ArgoCD is configured with `--enable-helm` so Kustomize can render Helm charts at sync time.
 
