@@ -48,17 +48,17 @@ spec:
               }
 
               echo "=== waiting for services ==="
-              wait_for "http://plex:32400/identity"
+              wait_for "http://plex-plex-media-server:32400/identity"
               wait_for "http://overseerr:5055/api/v1/status"
               wait_for "http://sonarr:8989/ping"
               wait_for "http://radarr:7878/ping"
 
               echo "=== plex libraries ==="
-              LIBRARIES=$(curl -sf "http://plex:32400/library/sections?X-Plex-Token=$PLEX_TOKEN" || echo "")
+              LIBRARIES=$(curl -sf "http://plex-plex-media-server:32400/library/sections?X-Plex-Token=$PLEX_TOKEN" || echo "")
               if ! echo "$LIBRARIES" | grep -q 'title="Movies"'; then
                 echo "creating Movies library"
                 curl -sfX POST \
-                  "http://plex:32400/library/sections?name=Movies&type=movie&agent=tv.plex.agents.movie&scanner=Plex%20Movie&language=en-US&location=/media/movies&X-Plex-Token=$PLEX_TOKEN" \
+                  "http://plex-plex-media-server:32400/library/sections?name=Movies&type=movie&agent=tv.plex.agents.movie&scanner=Plex%20Movie&language=en-US&location=/media/movies&X-Plex-Token=$PLEX_TOKEN" \
                   || echo "Movies create failed (may already exist)"
               else
                 echo "Movies library present"
@@ -66,7 +66,7 @@ spec:
               if ! echo "$LIBRARIES" | grep -q 'title="TV Shows"'; then
                 echo "creating TV Shows library"
                 curl -sfX POST \
-                  "http://plex:32400/library/sections?name=TV%20Shows&type=show&agent=tv.plex.agents.series&scanner=Plex%20TV%20Series&language=en-US&location=/media/tv&X-Plex-Token=$PLEX_TOKEN" \
+                  "http://plex-plex-media-server:32400/library/sections?name=TV%20Shows&type=show&agent=tv.plex.agents.series&scanner=Plex%20TV%20Series&language=en-US&location=/media/tv&X-Plex-Token=$PLEX_TOKEN" \
                   || echo "TV Shows create failed (may already exist)"
               else
                 echo "TV Shows library present"
