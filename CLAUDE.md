@@ -59,7 +59,39 @@ This makes the app reachable at `https://{app-name}.bumblebee-themis.ts.net/`.
 
 ## Secrets
 
-Commit `secret.yaml` with `stringData` placeholder values (e.g. `"change-me"`). After deployment, update real values in-cluster manually — they are never committed to Git.
+**All sensitive values MUST be sops/age-encrypted — no exceptions.** This includes passwords, API keys, tokens, and usernames of managed accounts (e.g. a service-generated `admin` user). The sops recipient is defined in `.sops.yaml`.
+
+Standard layout per app:
+```
+apps/{app-name}/
+├── secret.sops.yaml         # sops-encrypted Secret manifest
+└── secret-generator.yaml    # ksops generator (mirrors apps/immich/)
+```
+
+`secret.sops.yaml` is an ordinary `kind: Secret` manifest with `stringData:` values that sops encrypts in place:
+
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {app-name}-secret
+  namespace: {app-name}
+type: Opaque
+stringData:
+  FIELD_NAME: ENC[AES256_GCM,data:...,iv:...,tag:...,type:str]
+```
+
+Referenced by `secret-generator.yaml` and wired into the parent kustomization via `generators:`. Pods consume values through `envFrom`/`secretKeyRef` — **never interpolate them into `helmCharts` values files or inline manifests**, since those render to ConfigMaps/manifests in plaintext on disk.
+
+Encrypt / edit:
+```bash
+nix shell nixpkgs#sops --command sops -e -i apps/{app-name}/secret.sops.yaml   # encrypt in place
+nix shell nixpkgs#sops --command sops apps/{app-name}/secret.sops.yaml          # edit decrypted
+```
+
+ArgoCD's repo-server runs the ksops plugin to decrypt at sync time using the cluster-mounted age key.
+
+**Charts that force secrets into values files (e.g. PrepArr's `.Values.*.config.apiKey` rendered into ConfigMaps) are unavoidable leaks.** Before adopting such a chart, check whether all credentials can be wired through `existingSecret`-style references.
 
 ## Renovate
 

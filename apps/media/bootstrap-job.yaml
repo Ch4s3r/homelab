@@ -1,0 +1,121 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: media-bootstrap
+  namespace: media
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 10
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: media-bootstrap
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: wire
+          # renovate: datasource=docker depName=curlimages/curl versioning=docker
+          image: curlimages/curl:8.11.0
+          env:
+            - name: PLEX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: media-secret
+                  key: PLEX_TOKEN
+            - name: SONARR_API_KEY
+              value: b66d3fe27c2a2b48d3a1d1ae0c03f818
+            - name: RADARR_API_KEY
+              value: 5d2912b9cd3cf89dba3312c93b289772
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -eu
+
+              wait_for() {
+                url=$1
+                for i in $(seq 1 180); do
+                  if curl -sfk "$url" >/dev/null 2>&1; then
+                    echo "ready: $url"
+                    return 0
+                  fi
+                  sleep 2
+                done
+                echo "timeout waiting for $url" >&2
+                return 1
+              }
+
+              echo "=== waiting for services ==="
+              wait_for "http://plex:32400/identity"
+              wait_for "http://overseerr:5055/api/v1/status"
+              wait_for "http://sonarr:8989/ping"
+              wait_for "http://radarr:7878/ping"
+
+              echo "=== plex libraries ==="
+              LIBRARIES=$(curl -sf "http://plex:32400/library/sections?X-Plex-Token=$PLEX_TOKEN" || echo "")
+              if ! echo "$LIBRARIES" | grep -q 'title="Movies"'; then
+                echo "creating Movies library"
+                curl -sfX POST \
+                  "http://plex:32400/library/sections?name=Movies&type=movie&agent=tv.plex.agents.movie&scanner=Plex%20Movie&language=en-US&location=/media/movies&X-Plex-Token=$PLEX_TOKEN" \
+                  || echo "Movies create failed (may already exist)"
+              else
+                echo "Movies library present"
+              fi
+              if ! echo "$LIBRARIES" | grep -q 'title="TV Shows"'; then
+                echo "creating TV Shows library"
+                curl -sfX POST \
+                  "http://plex:32400/library/sections?name=TV%20Shows&type=show&agent=tv.plex.agents.series&scanner=Plex%20TV%20Series&language=en-US&location=/media/tv&X-Plex-Token=$PLEX_TOKEN" \
+                  || echo "TV Shows create failed (may already exist)"
+              else
+                echo "TV Shows library present"
+              fi
+
+              echo "=== overseerr setup ==="
+              STATUS=$(curl -sf "http://overseerr:5055/api/v1/status" || echo "{}")
+              INITIALIZED=$(echo "$STATUS" | grep -o '"initialized":[^,}]*' | cut -d: -f2)
+              if [ "$INITIALIZED" != "true" ]; then
+                echo "overseerr not initialized, running setup"
+                COOKIE=/tmp/cookies.txt
+                rm -f "$COOKIE"
+                curl -sf -c "$COOKIE" -X POST \
+                  -H 'Content-Type: application/json' \
+                  -d "{\"authToken\":\"$PLEX_TOKEN\"}" \
+                  "http://overseerr:5055/api/v1/auth/plex" >/tmp/plex_login.json
+                echo "authenticated with plex"
+
+                curl -sf -b "$COOKIE" -X GET \
+                  "http://overseerr:5055/api/v1/settings/plex/devices/servers" >/tmp/servers.json
+                SERVER_ID=$(grep -o '"clientIdentifier":"[^"]*"' /tmp/servers.json | head -1 | cut -d'"' -f4)
+
+                curl -sf -b "$COOKIE" -X POST \
+                  -H 'Content-Type: application/json' \
+                  -d "{\"name\":\"Plex\",\"machineId\":\"$SERVER_ID\",\"hostname\":\"plex\",\"port\":32400,\"useSsl\":false,\"ip\":\"plex\",\"libraries\":[]}" \
+                  "http://overseerr:5055/api/v1/settings/plex" || echo "plex settings post failed (may already be set)"
+                curl -sf -b "$COOKIE" -X GET "http://overseerr:5055/api/v1/settings/plex/library?sync=true" || echo "library sync issue"
+                echo "plex server registered"
+
+                curl -sf -b "$COOKIE" -X POST \
+                  -H 'Content-Type: application/json' \
+                  -d "{\"name\":\"Radarr\",\"hostname\":\"radarr\",\"port\":7878,\"apiKey\":\"$RADARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":1,\"activeProfileName\":\"HD - 1080p\",\"activeDirectory\":\"/media/movies\",\"is4k\":false,\"minimumAvailability\":\"released\",\"isDefault\":true,\"externalUrl\":\"https://radarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false}" \
+                  "http://overseerr:5055/api/v1/settings/radarr" || echo "radarr post failed"
+                echo "radarr registered"
+
+                curl -sf -b "$COOKIE" -X POST \
+                  -H 'Content-Type: application/json' \
+                  -d "{\"name\":\"Sonarr\",\"hostname\":\"sonarr\",\"port\":8989,\"apiKey\":\"$SONARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":1,\"activeProfileName\":\"HD - 1080p\",\"activeDirectory\":\"/media/tv\",\"activeLanguageProfileId\":1,\"isDefault\":true,\"externalUrl\":\"https://sonarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false,\"enableSeasonFolders\":true}" \
+                  "http://overseerr:5055/api/v1/settings/sonarr" || echo "sonarr post failed"
+                echo "sonarr registered"
+              else
+                echo "overseerr already initialized"
+              fi
+
+              echo "=== bootstrap done ==="
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi

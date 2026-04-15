@@ -1,0 +1,66 @@
+image:
+  registry: index.docker.io
+  repository: plexinc/pms-docker
+  # renovate: datasource=docker depName=plexinc/pms-docker versioning=loose
+  tag: 1.43.1.10611-1e34174b1
+  pullPolicy: IfNotPresent
+
+pms:
+  storageClassName: local-path
+  configStorage: 10Gi
+
+extraEnv:
+  TZ: Europe/Vienna
+  ADVERTISE_IP: https://plex.bumblebee-themis.ts.net:443/
+  ALLOWED_NETWORKS: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10
+
+ingress:
+  enabled: true
+  ingressClassName: tailscale
+  url: plex
+  tls:
+    - hosts:
+        - plex
+
+extraVolumes:
+  - name: media
+    persistentVolumeClaim:
+      claimName: media
+
+extraVolumeMounts:
+  - name: media
+    mountPath: /media
+    readOnly: true
+
+extraInitContainers:
+  - name: seed-plex-token
+    image: busybox:1.37
+    command: ["sh", "-c"]
+    args:
+      - |
+        PREFS_DIR="/config/Library/Application Support/Plex Media Server"
+        PREFS_FILE="$PREFS_DIR/Preferences.xml"
+        if [ ! -f "$PREFS_FILE" ]; then
+          mkdir -p "$PREFS_DIR"
+          cat > "$PREFS_FILE" <<EOF
+        <?xml version="1.0" encoding="utf-8"?>
+        <Preferences PlexOnlineToken="${PLEX_TOKEN}" AcceptedEULA="1" PublishServerOnPlexOnlineKey="1" FriendlyName="homelab" allowedNetworks="10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10"/>
+        EOF
+          chown -R 1000:1000 /config/Library
+          chmod 600 "$PREFS_FILE"
+        fi
+    env:
+      - name: PLEX_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: media-secret
+            key: PLEX_TOKEN
+    volumeMounts:
+      - name: pms-config
+        mountPath: /config
+    securityContext:
+      runAsUser: 0
+
+service:
+  type: ClusterIP
+  port: 32400
