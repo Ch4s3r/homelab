@@ -83,6 +83,8 @@ prowlarr:
     watch: true
   config:
     apiKey: b26b62a046ed606384d38d1ac9b883de
+    applications: []
+    indexers: []
 
 sonarr:
   enabled: true
