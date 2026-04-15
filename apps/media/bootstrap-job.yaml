@@ -73,58 +73,80 @@ spec:
               fi
 
               echo "=== overseerr setup ==="
-              STATUS=$(curl -sf "http://overseerr:5055/api/v1/status" || echo "{}")
-              INITIALIZED=$(echo "$STATUS" | grep -o '"initialized":[^,}]*' | cut -d: -f2)
-              if [ "$INITIALIZED" != "true" ]; then
-                echo "overseerr not initialized, running setup"
-                COOKIE=/tmp/cookies.txt
-                rm -f "$COOKIE"
-                curl -sf -c "$COOKIE" -X POST \
-                  -H 'Content-Type: application/json' \
-                  -d "{\"authToken\":\"$PLEX_TOKEN\"}" \
-                  "http://overseerr:5055/api/v1/auth/plex" >/dev/null
-                echo "authenticated with plex"
+              COOKIE=/tmp/cookies.txt
+              rm -f "$COOKIE"
+              curl -sf -c "$COOKIE" -X POST \
+                -H 'Content-Type: application/json' \
+                -d "{\"authToken\":\"$PLEX_TOKEN\"}" \
+                "http://overseerr:5055/api/v1/auth/plex" >/dev/null
+              echo "authenticated with plex"
 
-                # Wait for device discovery to return at least one server (up to 60s)
-                PLEX_IP=""
+              PLEX_CFG=$(curl -sf -b "$COOKIE" http://overseerr:5055/api/v1/settings/plex || echo "")
+              PLEX_MACHINE_ID=$(echo "$PLEX_CFG" | grep -o '"machineId":"[^"]*"' | cut -d'"' -f4)
+
+              if [ -z "$PLEX_MACHINE_ID" ]; then
+                echo "configuring plex server"
+
+                # Retry device discovery up to 60s to wait for Plex to register with plex.tv
+                PLEX_LOCAL_IP=""
                 for i in $(seq 1 30); do
                   SERVERS=$(curl -sf -b "$COOKIE" \
                     "http://overseerr:5055/api/v1/settings/plex/devices/servers" || echo "[]")
-                  PLEX_IP=$(echo "$SERVERS" | grep -o '"address":"[^"]*"' | head -1 | cut -d'"' -f4)
-                  if [ -n "$PLEX_IP" ]; then
+                  # Prefer local port-32400 connection over external Tailscale HTTPS
+                  PLEX_LOCAL_IP=$(echo "$SERVERS" | grep -o '"address":"[^"]*","port":32400' | \
+                    grep -o '"address":"[^"]*"' | cut -d'"' -f4 | head -1)
+                  if [ -n "$PLEX_LOCAL_IP" ]; then
                     break
                   fi
                   sleep 2
                 done
 
-                if [ -z "$PLEX_IP" ]; then
-                  # Fall back to pod IP from identity endpoint
-                  PLEX_IP="plex-plex-media-server"
+                if [ -n "$PLEX_LOCAL_IP" ]; then
+                  echo "using plex address: $PLEX_LOCAL_IP"
+                  RESULT=$(curl -sf -b "$COOKIE" -X POST \
+                    -H 'Content-Type: application/json' \
+                    -d "{\"ip\":\"$PLEX_LOCAL_IP\",\"port\":32400,\"useSsl\":false,\"hostname\":\"plex-plex-media-server\"}" \
+                    "http://overseerr:5055/api/v1/settings/plex" || echo "")
+                  if echo "$RESULT" | grep -q '"machineId"'; then
+                    echo "plex server registered"
+                    curl -sf -b "$COOKIE" \
+                      "http://overseerr:5055/api/v1/settings/plex/library?sync=true&enable=1,2" \
+                      >/dev/null || echo "library sync warning"
+                    echo "plex libraries synced"
+                  else
+                    echo "plex server registration failed"
+                  fi
+                else
+                  echo "plex device discovery returned no local address, skipping"
                 fi
+              else
+                echo "plex already configured: $PLEX_MACHINE_ID"
+              fi
 
-                curl -sf -b "$COOKIE" -X POST \
-                  -H 'Content-Type: application/json' \
-                  -d "{\"ip\":\"$PLEX_IP\",\"port\":32400,\"useSsl\":false,\"hostname\":\"plex-plex-media-server\"}" \
-                  "http://overseerr:5055/api/v1/settings/plex" || echo "plex settings post failed"
-                echo "plex server registered"
-
-                curl -sf -b "$COOKIE" -X GET \
-                  "http://overseerr:5055/api/v1/settings/plex/library?sync=true&enable=1,2" || echo "library sync issue"
-                echo "plex libraries synced"
-
+              # Add Radarr only if not already present
+              RADARR_COUNT=$(curl -sf -b "$COOKIE" http://overseerr:5055/api/v1/settings/radarr | \
+                grep -c '"id"' || echo "0")
+              if [ "$RADARR_COUNT" -eq 0 ]; then
                 curl -sf -b "$COOKIE" -X POST \
                   -H 'Content-Type: application/json' \
                   -d "{\"name\":\"Radarr\",\"hostname\":\"radarr\",\"port\":7878,\"apiKey\":\"$RADARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":1,\"activeProfileName\":\"HD - 1080p\",\"activeDirectory\":\"/media/movies\",\"is4k\":false,\"minimumAvailability\":\"released\",\"isDefault\":true,\"externalUrl\":\"https://radarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false}" \
                   "http://overseerr:5055/api/v1/settings/radarr" || echo "radarr post failed"
                 echo "radarr registered"
+              else
+                echo "radarr already configured ($RADARR_COUNT)"
+              fi
 
+              # Add Sonarr only if not already present
+              SONARR_COUNT=$(curl -sf -b "$COOKIE" http://overseerr:5055/api/v1/settings/sonarr | \
+                grep -c '"id"' || echo "0")
+              if [ "$SONARR_COUNT" -eq 0 ]; then
                 curl -sf -b "$COOKIE" -X POST \
                   -H 'Content-Type: application/json' \
                   -d "{\"name\":\"Sonarr\",\"hostname\":\"sonarr\",\"port\":8989,\"apiKey\":\"$SONARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":1,\"activeProfileName\":\"HD - 1080p\",\"activeDirectory\":\"/media/tv\",\"activeLanguageProfileId\":1,\"is4k\":false,\"isDefault\":true,\"externalUrl\":\"https://sonarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false,\"enableSeasonFolders\":true}" \
                   "http://overseerr:5055/api/v1/settings/sonarr" || echo "sonarr post failed"
                 echo "sonarr registered"
               else
-                echo "overseerr already initialized"
+                echo "sonarr already configured ($SONARR_COUNT)"
               fi
 
               echo "=== bootstrap done ==="
