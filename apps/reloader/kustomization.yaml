@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: reloader
+
+resources:
+  - namespace.yaml
+
+helmCharts:
+  - name: reloader
+    releaseName: reloader
+    repo: https://stakater.github.io/stakater-charts
+    namespace: reloader
+    # renovate: datasource=helm depName=reloader registryUrl=https://stakater.github.io/stakater-charts versioning=semver
+    version: 2.2.11
