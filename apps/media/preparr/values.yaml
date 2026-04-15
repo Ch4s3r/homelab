@@ -83,8 +83,24 @@ prowlarr:
     watch: true
   config:
     apiKey: b26b62a046ed606384d38d1ac9b883de
-    applications: []
-    indexers: []
+    applications:
+      - name: Sonarr
+        apiKey: b66d3fe27c2a2b48d3a1d1ae0c03f818
+        baseUrl: http://sonarr:8989
+        prowlarrUrl: http://prowlarr:9696
+        syncLevel: fullSync
+      - name: Radarr
+        apiKey: 5d2912b9cd3cf89dba3312c93b289772
+        baseUrl: http://radarr:7878
+        prowlarrUrl: http://prowlarr:9696
+        syncLevel: fullSync
+    indexers:
+      - name: YTS
+        enable: true
+        priority: 25
+      - name: The Pirate Bay
+        enable: true
+        priority: 25
 
 sonarr:
   enabled: true

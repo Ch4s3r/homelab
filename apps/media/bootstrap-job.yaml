@@ -82,19 +82,35 @@ spec:
                 curl -sf -c "$COOKIE" -X POST \
                   -H 'Content-Type: application/json' \
                   -d "{\"authToken\":\"$PLEX_TOKEN\"}" \
-                  "http://overseerr:5055/api/v1/auth/plex" >/tmp/plex_login.json
+                  "http://overseerr:5055/api/v1/auth/plex" >/dev/null
                 echo "authenticated with plex"
 
-                curl -sf -b "$COOKIE" -X GET \
-                  "http://overseerr:5055/api/v1/settings/plex/devices/servers" >/tmp/servers.json
-                SERVER_ID=$(grep -o '"clientIdentifier":"[^"]*"' /tmp/servers.json | head -1 | cut -d'"' -f4)
+                # Wait for device discovery to return at least one server (up to 60s)
+                PLEX_IP=""
+                for i in $(seq 1 30); do
+                  SERVERS=$(curl -sf -b "$COOKIE" \
+                    "http://overseerr:5055/api/v1/settings/plex/devices/servers" || echo "[]")
+                  PLEX_IP=$(echo "$SERVERS" | grep -o '"address":"[^"]*"' | head -1 | cut -d'"' -f4)
+                  if [ -n "$PLEX_IP" ]; then
+                    break
+                  fi
+                  sleep 2
+                done
+
+                if [ -z "$PLEX_IP" ]; then
+                  # Fall back to pod IP from identity endpoint
+                  PLEX_IP="plex-plex-media-server"
+                fi
 
                 curl -sf -b "$COOKIE" -X POST \
                   -H 'Content-Type: application/json' \
-                  -d "{\"name\":\"Plex\",\"machineId\":\"$SERVER_ID\",\"hostname\":\"plex\",\"port\":32400,\"useSsl\":false,\"ip\":\"plex\",\"libraries\":[]}" \
-                  "http://overseerr:5055/api/v1/settings/plex" || echo "plex settings post failed (may already be set)"
-                curl -sf -b "$COOKIE" -X GET "http://overseerr:5055/api/v1/settings/plex/library?sync=true" || echo "library sync issue"
+                  -d "{\"ip\":\"$PLEX_IP\",\"port\":32400,\"useSsl\":false,\"hostname\":\"plex-plex-media-server\"}" \
+                  "http://overseerr:5055/api/v1/settings/plex" || echo "plex settings post failed"
                 echo "plex server registered"
+
+                curl -sf -b "$COOKIE" -X GET \
+                  "http://overseerr:5055/api/v1/settings/plex/library?sync=true&enable=1,2" || echo "library sync issue"
+                echo "plex libraries synced"
 
                 curl -sf -b "$COOKIE" -X POST \
                   -H 'Content-Type: application/json' \
@@ -104,7 +120,7 @@ spec:
 
                 curl -sf -b "$COOKIE" -X POST \
                   -H 'Content-Type: application/json' \
-                  -d "{\"name\":\"Sonarr\",\"hostname\":\"sonarr\",\"port\":8989,\"apiKey\":\"$SONARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":1,\"activeProfileName\":\"HD - 1080p\",\"activeDirectory\":\"/media/tv\",\"activeLanguageProfileId\":1,\"isDefault\":true,\"externalUrl\":\"https://sonarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false,\"enableSeasonFolders\":true}" \
+                  -d "{\"name\":\"Sonarr\",\"hostname\":\"sonarr\",\"port\":8989,\"apiKey\":\"$SONARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":1,\"activeProfileName\":\"HD - 1080p\",\"activeDirectory\":\"/media/tv\",\"activeLanguageProfileId\":1,\"is4k\":false,\"isDefault\":true,\"externalUrl\":\"https://sonarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false,\"enableSeasonFolders\":true}" \
                   "http://overseerr:5055/api/v1/settings/sonarr" || echo "sonarr post failed"
                 echo "sonarr registered"
               else
