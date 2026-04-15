@@ -85,22 +85,74 @@ prowlarr:
     apiKey: b26b62a046ed606384d38d1ac9b883de
     applications:
       - name: Sonarr
-        apiKey: b66d3fe27c2a2b48d3a1d1ae0c03f818
-        baseUrl: http://sonarr:8989
-        prowlarrUrl: http://prowlarr:9696
+        implementation: Sonarr
+        implementationName: Sonarr
+        configContract: SonarrSettings
         syncLevel: fullSync
+        enable: true
+        tags: []
+        fields:
+          - name: prowlarrUrl
+            value: "http://prowlarr:9696"
+          - name: baseUrl
+            value: "http://sonarr:8989"
+          - name: apiKey
+            value: "b66d3fe27c2a2b48d3a1d1ae0c03f818"
+          - name: syncCategories
+            value: [5000, 5010, 5020, 5030, 5040, 5045, 5050, 5060, 5070, 5080, 5090]
+          - name: animeSyncCategories
+            value: [5070]
+          - name: syncAnimeStandardFormatSearch
+            value: false
+          - name: syncRejectBlocklistedTorrentHashesWhileGrabbing
+            value: false
       - name: Radarr
-        apiKey: 5d2912b9cd3cf89dba3312c93b289772
-        baseUrl: http://radarr:7878
-        prowlarrUrl: http://prowlarr:9696
+        implementation: Radarr
+        implementationName: Radarr
+        configContract: RadarrSettings
         syncLevel: fullSync
+        enable: true
+        tags: []
+        fields:
+          - name: prowlarrUrl
+            value: "http://prowlarr:9696"
+          - name: baseUrl
+            value: "http://radarr:7878"
+          - name: apiKey
+            value: "5d2912b9cd3cf89dba3312c93b289772"
+          - name: syncCategories
+            value: [2000, 2010, 2020, 2030, 2040, 2045, 2050, 2060, 2070, 2080, 2090]
+          - name: syncRejectBlocklistedTorrentHashesWhileGrabbing
+            value: false
     indexers:
       - name: YTS
         enable: true
         priority: 25
+        appProfileId: 1
+        implementation: Cardigann
+        implementationName: Cardigann
+        configContract: CardigannSettings
+        privacy: public
+        tags: []
+        fields:
+          - name: definitionFile
+            value: yts
+          - name: baseUrl
+            value: "https://yts.mx/"
       - name: The Pirate Bay
         enable: true
         priority: 25
+        appProfileId: 1
+        implementation: Cardigann
+        implementationName: Cardigann
+        configContract: CardigannSettings
+        privacy: public
+        tags: []
+        fields:
+          - name: definitionFile
+            value: thepiratebay
+          - name: baseUrl
+            value: "https://thepiratebay.org/"
 
 sonarr:
   enabled: true
