@@ -1,0 +1,36 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: preparr-postgres
+  namespace: media
+spec:
+  instances: 1
+
+  storage:
+    size: 10Gi
+    storageClass: local-path
+
+  imageName: ghcr.io/cloudnative-pg/postgresql:16
+
+  enableSuperuserAccess: true
+
+  postgresql:
+    pg_hba:
+      - host all all 10.42.0.0/16 trust
+
+  bootstrap:
+    initdb:
+      database: servarr
+      owner: postgres
+      postInitSQL:
+        - ALTER USER postgres WITH SUPERUSER
+      postInitApplicationSQL:
+        - CREATE DATABASE sonarr_main OWNER postgres
+        - CREATE DATABASE sonarr_log OWNER postgres
+        - CREATE DATABASE radarr_main OWNER postgres
+        - CREATE DATABASE radarr_log OWNER postgres
+        - CREATE DATABASE prowlarr_main OWNER postgres
+        - CREATE DATABASE prowlarr_log OWNER postgres
+        - CREATE DATABASE bazarr_main OWNER postgres
+        - CREATE DATABASE bazarr_log OWNER postgres
+        - CREATE DATABASE qbittorrent_main OWNER postgres
