@@ -68,6 +68,10 @@ spec:
                 return 1
               }
 
+              echo "=== media directories ==="
+              mkdir -p /media/movies /media/tv /media/downloads
+              echo "media directories ready"
+
               echo "=== waiting for services ==="
               wait_for "http://plex-plex-media-server:32400/identity"
               wait_for "http://sonarr:8989/ping"
@@ -82,16 +86,14 @@ spec:
               if ! echo "$LIBRARIES" | grep -q 'title="Movies"'; then
                 curl -sfX POST \
                   "http://plex-plex-media-server:32400/library/sections?name=Movies&type=movie&agent=tv.plex.agents.movie&scanner=Plex%20Movie&language=en-US&location=/media/movies&X-Plex-Token=$PLEX_TOKEN" \
-                  >/dev/null || true
-                echo "Movies library created"
+                  >/dev/null && echo "Movies library created" || echo "Movies library create failed"
               else
                 echo "Movies library present"
               fi
               if ! echo "$LIBRARIES" | grep -q 'title="TV Shows"'; then
                 curl -sfX POST \
                   "http://plex-plex-media-server:32400/library/sections?name=TV%20Shows&type=show&agent=tv.plex.agents.series&scanner=Plex%20TV%20Series&language=en-US&location=/media/tv&X-Plex-Token=$PLEX_TOKEN" \
-                  >/dev/null || true
-                echo "TV Shows library created"
+                  >/dev/null && echo "TV Shows library created" || echo "TV Shows library create failed"
               else
                 echo "TV Shows library present"
               fi
@@ -105,8 +107,8 @@ spec:
                   -H "X-Api-Key: $PROWLARR_API_KEY" \
                   -H "Content-Type: application/json" \
                   -d "{\"name\":\"Radarr\",\"syncLevel\":\"fullSync\",\"enable\":true,\"priority\":25,\"appProfileId\":1,\"implementationName\":\"Radarr\",\"implementation\":\"Radarr\",\"configContract\":\"RadarrSettings\",\"tags\":[],\"fields\":[{\"name\":\"prowlarrUrl\",\"value\":\"http://prowlarr:9696\"},{\"name\":\"baseUrl\",\"value\":\"http://radarr:7878\"},{\"name\":\"apiKey\",\"value\":\"$RADARR_API_KEY\"},{\"name\":\"syncCategories\",\"value\":[2000,2010,2020,2030,2040,2045,2050,2060,2070,2080,2090]},{\"name\":\"syncRejectBlocklistedTorrentHashesWhileGrabbing\",\"value\":false}]}" \
-                  http://prowlarr:9696/api/v1/applications >/dev/null || echo "radarr app add failed"
-                echo "prowlarr: radarr added"
+                  http://prowlarr:9696/api/v1/applications >/dev/null \
+                  && echo "prowlarr: radarr added" || echo "prowlarr: radarr add failed"
               else
                 echo "prowlarr: radarr already present"
               fi
@@ -116,8 +118,8 @@ spec:
                   -H "X-Api-Key: $PROWLARR_API_KEY" \
                   -H "Content-Type: application/json" \
                   -d "{\"name\":\"Sonarr\",\"syncLevel\":\"fullSync\",\"enable\":true,\"priority\":25,\"appProfileId\":1,\"implementationName\":\"Sonarr\",\"implementation\":\"Sonarr\",\"configContract\":\"SonarrSettings\",\"tags\":[],\"fields\":[{\"name\":\"prowlarrUrl\",\"value\":\"http://prowlarr:9696\"},{\"name\":\"baseUrl\",\"value\":\"http://sonarr:8989\"},{\"name\":\"apiKey\",\"value\":\"$SONARR_API_KEY\"},{\"name\":\"syncCategories\",\"value\":[5000,5010,5020,5030,5040,5045,5050,5060,5070,5080,5090]},{\"name\":\"animeSyncCategories\",\"value\":[5070]},{\"name\":\"syncAnimeStandardFormatSearch\",\"value\":false},{\"name\":\"syncRejectBlocklistedTorrentHashesWhileGrabbing\",\"value\":false}]}" \
-                  http://prowlarr:9696/api/v1/applications >/dev/null || echo "sonarr app add failed"
-                echo "prowlarr: sonarr added"
+                  http://prowlarr:9696/api/v1/applications >/dev/null \
+                  && echo "prowlarr: sonarr added" || echo "prowlarr: sonarr add failed"
               else
                 echo "prowlarr: sonarr already present"
               fi
@@ -131,8 +133,8 @@ spec:
                   -H "X-Api-Key: $PROWLARR_API_KEY" \
                   -H "Content-Type: application/json" \
                   -d "{\"name\":\"YTS\",\"enable\":true,\"priority\":25,\"appProfileId\":1,\"implementation\":\"Cardigann\",\"implementationName\":\"Cardigann\",\"configContract\":\"CardigannSettings\",\"privacy\":\"public\",\"tags\":[],\"fields\":[{\"name\":\"definitionFile\",\"value\":\"yts\"},{\"name\":\"baseUrl\",\"value\":\"https://yts.mx/\"}]}" \
-                  http://prowlarr:9696/api/v1/indexer >/dev/null || echo "YTS add failed"
-                echo "prowlarr: YTS added"
+                  http://prowlarr:9696/api/v1/indexer >/dev/null \
+                  && echo "prowlarr: YTS added" || echo "prowlarr: YTS add failed"
               else
                 echo "prowlarr: YTS already present"
               fi
@@ -142,27 +144,13 @@ spec:
                   -H "X-Api-Key: $PROWLARR_API_KEY" \
                   -H "Content-Type: application/json" \
                   -d "{\"name\":\"The Pirate Bay\",\"enable\":true,\"priority\":25,\"appProfileId\":1,\"implementation\":\"Cardigann\",\"implementationName\":\"Cardigann\",\"configContract\":\"CardigannSettings\",\"privacy\":\"public\",\"tags\":[],\"fields\":[{\"name\":\"definitionFile\",\"value\":\"thepiratebay\"},{\"name\":\"baseUrl\",\"value\":\"https://thepiratebay.org/\"}]}" \
-                  http://prowlarr:9696/api/v1/indexer >/dev/null || echo "TPB add failed"
-                echo "prowlarr: The Pirate Bay added"
+                  http://prowlarr:9696/api/v1/indexer >/dev/null \
+                  && echo "prowlarr: The Pirate Bay added" || echo "prowlarr: The Pirate Bay add failed"
               else
                 echo "prowlarr: The Pirate Bay already present"
               fi
 
-              echo "=== sonarr: quality profile + root folder + download client ==="
-              SONARR_PROFILES=$(curl -sf -H "X-Api-Key: $SONARR_API_KEY" \
-                http://sonarr:8989/api/v3/qualityprofile || echo "[]")
-
-              if ! echo "$SONARR_PROFILES" | grep -q '"HD - 1080p"'; then
-                curl -sf -X POST \
-                  -H "X-Api-Key: $SONARR_API_KEY" \
-                  -H "Content-Type: application/json" \
-                  -d '{"name":"HD - 1080p","upgradeAllowed":true,"cutoff":7,"items":[{"quality":{"id":1,"name":"SDTV"},"items":[],"allowed":false},{"quality":{"id":9,"name":"HDTV-1080p"},"items":[],"allowed":true},{"id":0,"name":"WEB 1080p","items":[{"quality":{"id":3,"name":"WEBDL-1080p"},"items":[],"allowed":true},{"quality":{"id":15,"name":"WEBRip-1080p"},"items":[],"allowed":true}],"allowed":true},{"quality":{"id":7,"name":"Bluray-1080p"},"items":[],"allowed":true}],"minFormatScore":0,"cutoffFormatScore":0,"formatItems":[],"language":{"id":1,"name":"English"}}' \
-                  http://sonarr:8989/api/v3/qualityprofile >/dev/null || echo "sonarr quality profile add failed"
-                echo "sonarr: quality profile added"
-              else
-                echo "sonarr: quality profile already present"
-              fi
-
+              echo "=== sonarr: root folder + download client ==="
               SONARR_ROOTS=$(curl -sf -H "X-Api-Key: $SONARR_API_KEY" \
                 http://sonarr:8989/api/v3/rootfolder || echo "[]")
               if ! echo "$SONARR_ROOTS" | grep -q '"/media/tv"'; then
@@ -170,8 +158,8 @@ spec:
                   -H "X-Api-Key: $SONARR_API_KEY" \
                   -H "Content-Type: application/json" \
                   -d '{"path":"/media/tv"}' \
-                  http://sonarr:8989/api/v3/rootfolder >/dev/null || echo "sonarr root folder add failed"
-                echo "sonarr: root folder /media/tv added"
+                  http://sonarr:8989/api/v3/rootfolder >/dev/null \
+                  && echo "sonarr: root folder /media/tv added" || echo "sonarr: root folder add failed"
               else
                 echo "sonarr: root folder already present"
               fi
@@ -183,27 +171,13 @@ spec:
                   -H "X-Api-Key: $SONARR_API_KEY" \
                   -H "Content-Type: application/json" \
                   -d "{\"name\":\"qBittorrent\",\"enable\":true,\"protocol\":\"torrent\",\"priority\":1,\"implementation\":\"QBittorrent\",\"configContract\":\"QBittorrentSettings\",\"fields\":[{\"name\":\"host\",\"value\":\"qbittorrent\"},{\"name\":\"port\",\"value\":8080},{\"name\":\"username\",\"value\":\"admin\"},{\"name\":\"password\",\"value\":\"$QBITTORRENT_PASSWORD\"},{\"name\":\"category\",\"value\":\"tv\"},{\"name\":\"useSsl\",\"value\":false}]}" \
-                  http://sonarr:8989/api/v3/downloadclient >/dev/null || echo "sonarr qbittorrent add failed"
-                echo "sonarr: qbittorrent download client added"
+                  http://sonarr:8989/api/v3/downloadclient >/dev/null \
+                  && echo "sonarr: qbittorrent download client added" || echo "sonarr: download client add failed"
               else
                 echo "sonarr: download client already present"
               fi
 
-              echo "=== radarr: quality profile + root folder + download client ==="
-              RADARR_PROFILES=$(curl -sf -H "X-Api-Key: $RADARR_API_KEY" \
-                http://radarr:7878/api/v3/qualityprofile || echo "[]")
-
-              if ! echo "$RADARR_PROFILES" | grep -q '"HD - 1080p"'; then
-                curl -sf -X POST \
-                  -H "X-Api-Key: $RADARR_API_KEY" \
-                  -H "Content-Type: application/json" \
-                  -d '{"name":"HD - 1080p","upgradeAllowed":true,"cutoff":7,"items":[{"quality":{"id":1,"name":"SDTV"},"items":[],"allowed":false},{"id":0,"name":"WEB 1080p","items":[{"quality":{"id":3,"name":"WEBDL-1080p"},"items":[],"allowed":true},{"quality":{"id":15,"name":"WEBRip-1080p"},"items":[],"allowed":true}],"allowed":true},{"quality":{"id":7,"name":"Bluray-1080p"},"items":[],"allowed":true}],"minFormatScore":0,"cutoffFormatScore":0,"formatItems":[]}' \
-                  http://radarr:7878/api/v3/qualityprofile >/dev/null || echo "radarr quality profile add failed"
-                echo "radarr: quality profile added"
-              else
-                echo "radarr: quality profile already present"
-              fi
-
+              echo "=== radarr: root folder + download client ==="
               RADARR_ROOTS=$(curl -sf -H "X-Api-Key: $RADARR_API_KEY" \
                 http://radarr:7878/api/v3/rootfolder || echo "[]")
               if ! echo "$RADARR_ROOTS" | grep -q '"/media/movies"'; then
@@ -211,8 +185,8 @@ spec:
                   -H "X-Api-Key: $RADARR_API_KEY" \
                   -H "Content-Type: application/json" \
                   -d '{"path":"/media/movies"}' \
-                  http://radarr:7878/api/v3/rootfolder >/dev/null || echo "radarr root folder add failed"
-                echo "radarr: root folder /media/movies added"
+                  http://radarr:7878/api/v3/rootfolder >/dev/null \
+                  && echo "radarr: root folder /media/movies added" || echo "radarr: root folder add failed"
               else
                 echo "radarr: root folder already present"
               fi
@@ -224,8 +198,8 @@ spec:
                   -H "X-Api-Key: $RADARR_API_KEY" \
                   -H "Content-Type: application/json" \
                   -d "{\"name\":\"qBittorrent\",\"enable\":true,\"protocol\":\"torrent\",\"priority\":1,\"implementation\":\"QBittorrent\",\"configContract\":\"QBittorrentSettings\",\"fields\":[{\"name\":\"host\",\"value\":\"qbittorrent\"},{\"name\":\"port\",\"value\":8080},{\"name\":\"username\",\"value\":\"admin\"},{\"name\":\"password\",\"value\":\"$QBITTORRENT_PASSWORD\"},{\"name\":\"category\",\"value\":\"movies\"},{\"name\":\"useSsl\",\"value\":false}]}" \
-                  http://radarr:7878/api/v3/downloadclient >/dev/null || echo "radarr qbittorrent add failed"
-                echo "radarr: qbittorrent download client added"
+                  http://radarr:7878/api/v3/downloadclient >/dev/null \
+                  && echo "radarr: qbittorrent download client added" || echo "radarr: download client add failed"
               else
                 echo "radarr: download client already present"
               fi
@@ -239,20 +213,20 @@ spec:
                   -H "X-Api-Key: $BAZARR_API_KEY" \
                   -H "Content-Type: application/json" \
                   -d "{\"ip\":\"sonarr\",\"port\":8989,\"apikey\":\"$SONARR_API_KEY\",\"ssl\":false,\"base_url\":\"/\"}" \
-                  http://bazarr:6767/api/sonarr >/dev/null || echo "bazarr sonarr config failed"
+                  http://bazarr:6767/api/sonarr >/dev/null \
+                  && echo "bazarr: sonarr configured" || echo "bazarr: sonarr config failed"
 
                 curl -sf -X POST \
                   -H "X-Api-Key: $BAZARR_API_KEY" \
                   -H "Content-Type: application/json" \
                   -d "{\"ip\":\"radarr\",\"port\":7878,\"apikey\":\"$RADARR_API_KEY\",\"ssl\":false,\"base_url\":\"/\"}" \
-                  http://bazarr:6767/api/radarr >/dev/null || echo "bazarr radarr config failed"
-
-                echo "bazarr: sonarr + radarr configured"
+                  http://bazarr:6767/api/radarr >/dev/null \
+                  && echo "bazarr: radarr configured" || echo "bazarr: radarr config failed"
               else
                 echo "bazarr: already configured"
               fi
 
-              echo "=== qbittorrent: set password ==="
+              echo "=== qbittorrent: preferences ==="
               QB_LOGGED_IN=$(curl -sf -X POST \
                 -H "Content-Type: application/x-www-form-urlencoded" \
                 -d "username=admin&password=$QBITTORRENT_PASSWORD" \
@@ -260,13 +234,13 @@ spec:
                 http://qbittorrent:8080/api/v2/auth/login || echo "")
 
               if [ "$QB_LOGGED_IN" != "Ok." ]; then
-                echo "qbittorrent: setting initial password (auth bypass active)"
+                echo "qbittorrent: setting initial password + save path (auth bypass active)"
                 curl -sf \
                   -H "Referer: http://qbittorrent:8080" \
                   -X POST \
                   -d "json={\"web_ui_username\":\"admin\",\"web_ui_password\":\"$QBITTORRENT_PASSWORD\",\"save_path\":\"/media/downloads\"}" \
-                  http://qbittorrent:8080/api/v2/app/setPreferences >/dev/null || echo "qbittorrent preferences set failed"
-                echo "qbittorrent: password + save path set"
+                  http://qbittorrent:8080/api/v2/app/setPreferences >/dev/null \
+                  && echo "qbittorrent: password + save path set" || echo "qbittorrent: preferences set failed"
               else
                 QB_PREFS=$(curl -sf -b /tmp/qb_cookies.txt \
                   http://qbittorrent:8080/api/v2/app/preferences || echo "{}")
@@ -275,8 +249,8 @@ spec:
                     -H "Referer: http://qbittorrent:8080" \
                     -X POST \
                     -d 'json={"save_path":"/media/downloads"}' \
-                    http://qbittorrent:8080/api/v2/app/setPreferences >/dev/null || echo "qbittorrent save_path set failed"
-                  echo "qbittorrent: save path set to /media/downloads"
+                    http://qbittorrent:8080/api/v2/app/setPreferences >/dev/null \
+                    && echo "qbittorrent: save path set to /media/downloads" || echo "qbittorrent: save path set failed"
                 else
                   echo "qbittorrent: save path already correct"
                 fi
@@ -319,7 +293,7 @@ spec:
                       >/dev/null || true
                     echo "overseerr: plex libraries enabled"
                   else
-                    echo "overseerr: plex registration failed"
+                    echo "overseerr: plex registration failed: $RESULT"
                   fi
                 else
                   echo "overseerr: no local plex address found"
@@ -328,14 +302,32 @@ spec:
                 echo "overseerr: plex already configured ($PLEX_MACHINE_ID)"
               fi
 
+              RADARR_PROFILE_ID=$(curl -sf -H "X-Api-Key: $RADARR_API_KEY" \
+                http://radarr:7878/api/v3/qualityprofile | \
+                grep -o '"id":[0-9]*,"name":"[^"]*"' | head -1 | grep -o '"id":[0-9]*' | cut -d: -f2)
+              RADARR_PROFILE_ID=${RADARR_PROFILE_ID:-1}
+              RADARR_PROFILE_NAME=$(curl -sf -H "X-Api-Key: $RADARR_API_KEY" \
+                http://radarr:7878/api/v3/qualityprofile/$RADARR_PROFILE_ID | \
+                grep -o '"name":"[^"]*"' | head -1 | cut -d'"' -f4)
+              RADARR_PROFILE_NAME=${RADARR_PROFILE_NAME:-Any}
+
+              SONARR_PROFILE_ID=$(curl -sf -H "X-Api-Key: $SONARR_API_KEY" \
+                http://sonarr:8989/api/v3/qualityprofile | \
+                grep -o '"id":[0-9]*,"name":"[^"]*"' | head -1 | grep -o '"id":[0-9]*' | cut -d: -f2)
+              SONARR_PROFILE_ID=${SONARR_PROFILE_ID:-1}
+              SONARR_PROFILE_NAME=$(curl -sf -H "X-Api-Key: $SONARR_API_KEY" \
+                http://sonarr:8989/api/v3/qualityprofile/$SONARR_PROFILE_ID | \
+                grep -o '"name":"[^"]*"' | head -1 | cut -d'"' -f4)
+              SONARR_PROFILE_NAME=${SONARR_PROFILE_NAME:-Any}
+
               RADARR_COUNT=$(curl -sf -b "$COOKIE" http://overseerr:5055/api/v1/settings/radarr | \
                 grep -c '"id"' || echo "0")
               if [ "$RADARR_COUNT" -eq 0 ]; then
                 curl -sf -b "$COOKIE" -X POST \
                   -H 'Content-Type: application/json' \
-                  -d "{\"name\":\"Radarr\",\"hostname\":\"radarr\",\"port\":7878,\"apiKey\":\"$RADARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":1,\"activeProfileName\":\"HD - 1080p\",\"activeDirectory\":\"/media/movies\",\"is4k\":false,\"minimumAvailability\":\"released\",\"isDefault\":true,\"externalUrl\":\"https://radarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false}" \
-                  "http://overseerr:5055/api/v1/settings/radarr" >/dev/null || echo "overseerr radarr add failed"
-                echo "overseerr: radarr added"
+                  -d "{\"name\":\"Radarr\",\"hostname\":\"radarr\",\"port\":7878,\"apiKey\":\"$RADARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":$RADARR_PROFILE_ID,\"activeProfileName\":\"$RADARR_PROFILE_NAME\",\"activeDirectory\":\"/media/movies\",\"is4k\":false,\"minimumAvailability\":\"released\",\"isDefault\":true,\"externalUrl\":\"https://radarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false}" \
+                  "http://overseerr:5055/api/v1/settings/radarr" >/dev/null \
+                  && echo "overseerr: radarr added" || echo "overseerr: radarr add failed"
               else
                 echo "overseerr: radarr already configured"
               fi
@@ -345,14 +337,17 @@ spec:
               if [ "$SONARR_COUNT" -eq 0 ]; then
                 curl -sf -b "$COOKIE" -X POST \
                   -H 'Content-Type: application/json' \
-                  -d "{\"name\":\"Sonarr\",\"hostname\":\"sonarr\",\"port\":8989,\"apiKey\":\"$SONARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":1,\"activeProfileName\":\"HD - 1080p\",\"activeDirectory\":\"/media/tv\",\"activeLanguageProfileId\":1,\"is4k\":false,\"isDefault\":true,\"externalUrl\":\"https://sonarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false,\"enableSeasonFolders\":true}" \
-                  "http://overseerr:5055/api/v1/settings/sonarr" >/dev/null || echo "overseerr sonarr add failed"
-                echo "overseerr: sonarr added"
+                  -d "{\"name\":\"Sonarr\",\"hostname\":\"sonarr\",\"port\":8989,\"apiKey\":\"$SONARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":$SONARR_PROFILE_ID,\"activeProfileName\":\"$SONARR_PROFILE_NAME\",\"activeDirectory\":\"/media/tv\",\"activeLanguageProfileId\":1,\"is4k\":false,\"isDefault\":true,\"externalUrl\":\"https://sonarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false,\"enableSeasonFolders\":true}" \
+                  "http://overseerr:5055/api/v1/settings/sonarr" >/dev/null \
+                  && echo "overseerr: sonarr added" || echo "overseerr: sonarr add failed"
               else
                 echo "overseerr: sonarr already configured"
               fi
 
               echo "=== bootstrap done ==="
+          volumeMounts:
+            - name: media
+              mountPath: /media
           resources:
             requests:
               cpu: 10m
@@ -360,3 +355,7 @@ spec:
             limits:
               cpu: 200m
               memory: 128Mi
+      volumes:
+        - name: media
+          persistentVolumeClaim:
+            claimName: media
