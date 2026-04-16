@@ -264,11 +264,22 @@ spec:
                 curl -sf \
                   -H "Referer: http://qbittorrent:8080" \
                   -X POST \
-                  -d "json={\"web_ui_username\":\"admin\",\"web_ui_password\":\"$QBITTORRENT_PASSWORD\"}" \
-                  http://qbittorrent:8080/api/v2/app/setPreferences >/dev/null || echo "qbittorrent password set failed"
-                echo "qbittorrent: password set"
+                  -d "json={\"web_ui_username\":\"admin\",\"web_ui_password\":\"$QBITTORRENT_PASSWORD\",\"save_path\":\"/media/downloads\"}" \
+                  http://qbittorrent:8080/api/v2/app/setPreferences >/dev/null || echo "qbittorrent preferences set failed"
+                echo "qbittorrent: password + save path set"
               else
-                echo "qbittorrent: password already correct"
+                QB_PREFS=$(curl -sf -b /tmp/qb_cookies.txt \
+                  http://qbittorrent:8080/api/v2/app/preferences || echo "{}")
+                if ! echo "$QB_PREFS" | grep -q '"/media/downloads"'; then
+                  curl -sf -b /tmp/qb_cookies.txt \
+                    -H "Referer: http://qbittorrent:8080" \
+                    -X POST \
+                    -d 'json={"save_path":"/media/downloads"}' \
+                    http://qbittorrent:8080/api/v2/app/setPreferences >/dev/null || echo "qbittorrent save_path set failed"
+                  echo "qbittorrent: save path set to /media/downloads"
+                else
+                  echo "qbittorrent: save path already correct"
+                fi
               fi
 
               echo "=== overseerr setup ==="

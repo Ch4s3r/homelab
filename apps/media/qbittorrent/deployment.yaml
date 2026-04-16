@@ -26,6 +26,7 @@ spec:
               [LegalNotice]
               Accepted=true
               [Preferences]
+              Downloads\SavePath=/media/downloads
               WebUI\AuthSubnetWhitelistEnabled=true
               WebUI\AuthSubnetWhitelist=10.42.0.0/16
               WebUI\Username=admin
