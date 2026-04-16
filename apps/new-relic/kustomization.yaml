@@ -7,7 +7,7 @@ helmCharts:
   releaseName: newrelic-bundle
   namespace: newrelic
   # renovate: datasource=helm depName=nri-bundle registryUrl=https://helm-charts.newrelic.com versioning=semver
-  version: "7.0.0"
+  version: "7.0.2"
   valuesFile: values.yaml
 resources:
 - namespace.yaml
