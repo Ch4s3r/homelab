@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: radarr
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      containers:
+        - name: radarr
+          # renovate: datasource=docker depName=linuxserver/radarr versioning=docker
+          image: linuxserver/radarr:6.1.1
+          env:
+            - name: TZ
+              value: Europe/Vienna
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: RADARR__AUTH__APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: media-secret
+                  key: RADARR_API_KEY
+            - name: RADARR__POSTGRES__HOST
+              value: preparr-postgres-rw
+            - name: RADARR__POSTGRES__PORT
+              value: "5432"
+            - name: RADARR__POSTGRES__USER
+              value: postgres
+            - name: RADARR__POSTGRES__PASSWORD
+              value: ""
+            - name: RADARR__POSTGRES__MAINDATABASE
+              value: radarr_main
+            - name: RADARR__POSTGRES__LOGDATABASE
+              value: radarr_log
+          ports:
+            - containerPort: 7878
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: /media
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: radarr-config
+        - name: media
+          persistentVolumeClaim:
+            claimName: media

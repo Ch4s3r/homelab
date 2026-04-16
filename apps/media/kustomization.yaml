@@ -7,9 +7,14 @@ resources:
   - namespace.yaml
   - pvc.yaml
   - bootstrap-job.yaml
+  - postgres
   - plex
   - overseerr
-  - preparr
+  - sonarr
+  - radarr
+  - prowlarr
+  - qbittorrent
+  - bazarr
 
 generators:
   - secret-generator.yaml

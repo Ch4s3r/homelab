@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qbittorrent
+  template:
+    metadata:
+      labels:
+        app: qbittorrent
+    spec:
+      initContainers:
+        - name: init-config
+          image: busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /config/qBittorrent
+              if [ ! -f /config/qBittorrent/qBittorrent.conf ]; then
+                cat > /config/qBittorrent/qBittorrent.conf <<'CONF'
+              [LegalNotice]
+              Accepted=true
+              [Preferences]
+              WebUI\AuthSubnetWhitelistEnabled=true
+              WebUI\AuthSubnetWhitelist=10.42.0.0/16
+              WebUI\Username=admin
+              CONF
+                echo "qbittorrent config initialized"
+              else
+                echo "qbittorrent config already exists, skipping"
+              fi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      containers:
+        - name: qbittorrent
+          # renovate: datasource=docker depName=linuxserver/qbittorrent versioning=docker
+          image: linuxserver/qbittorrent:5.1.4
+          env:
+            - name: TZ
+              value: Europe/Vienna
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: WEBUI_PORT
+              value: "8080"
+          ports:
+            - containerPort: 8080
+              name: webui
+            - containerPort: 6881
+              name: bittorrent
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: /media
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: qbittorrent-config
+        - name: media
+          persistentVolumeClaim:
+            claimName: media

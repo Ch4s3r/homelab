@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarr
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonarr
+  template:
+    metadata:
+      labels:
+        app: sonarr
+    spec:
+      containers:
+        - name: sonarr
+          # renovate: datasource=docker depName=linuxserver/sonarr versioning=docker
+          image: linuxserver/sonarr:4.0.17
+          env:
+            - name: TZ
+              value: Europe/Vienna
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: SONARR__AUTH__APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: media-secret
+                  key: SONARR_API_KEY
+            - name: SONARR__POSTGRES__HOST
+              value: preparr-postgres-rw
+            - name: SONARR__POSTGRES__PORT
+              value: "5432"
+            - name: SONARR__POSTGRES__USER
+              value: postgres
+            - name: SONARR__POSTGRES__PASSWORD
+              value: ""
+            - name: SONARR__POSTGRES__MAINDATABASE
+              value: sonarr_main
+            - name: SONARR__POSTGRES__LOGDATABASE
+              value: sonarr_log
+          ports:
+            - containerPort: 8989
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: media
+              mountPath: /media
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: sonarr-config
+        - name: media
+          persistentVolumeClaim:
+            claimName: media

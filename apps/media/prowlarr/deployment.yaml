@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prowlarr
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prowlarr
+  template:
+    metadata:
+      labels:
+        app: prowlarr
+    spec:
+      containers:
+        - name: prowlarr
+          # renovate: datasource=docker depName=linuxserver/prowlarr versioning=docker
+          image: linuxserver/prowlarr:2.3.5
+          env:
+            - name: TZ
+              value: Europe/Vienna
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: PROWLARR__AUTH__APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: media-secret
+                  key: PROWLARR_API_KEY
+            - name: PROWLARR__POSTGRES__HOST
+              value: preparr-postgres-rw
+            - name: PROWLARR__POSTGRES__PORT
+              value: "5432"
+            - name: PROWLARR__POSTGRES__USER
+              value: postgres
+            - name: PROWLARR__POSTGRES__PASSWORD
+              value: ""
+            - name: PROWLARR__POSTGRES__MAINDATABASE
+              value: prowlarr_main
+            - name: PROWLARR__POSTGRES__LOGDATABASE
+              value: prowlarr_log
+          ports:
+            - containerPort: 9696
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: prowlarr-config

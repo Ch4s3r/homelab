@@ -20,12 +20,11 @@ spec:
 
   bootstrap:
     initdb:
-      database: servarr
+      database: sonarr_main
       owner: postgres
       postInitSQL:
         - ALTER USER postgres WITH SUPERUSER
       postInitApplicationSQL:
-        - CREATE DATABASE sonarr_main OWNER postgres
         - CREATE DATABASE sonarr_log OWNER postgres
         - CREATE DATABASE radarr_main OWNER postgres
         - CREATE DATABASE radarr_log OWNER postgres
@@ -33,4 +32,3 @@ spec:
         - CREATE DATABASE prowlarr_log OWNER postgres
         - CREATE DATABASE bazarr_main OWNER postgres
         - CREATE DATABASE bazarr_log OWNER postgres
-        - CREATE DATABASE qbittorrent_main OWNER postgres
