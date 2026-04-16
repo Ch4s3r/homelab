@@ -37,9 +37,9 @@ spec:
               value: postgres
             - name: RADARR__POSTGRES__PASSWORD
               value: ""
-            - name: RADARR__POSTGRES__MAINDATABASE
+            - name: RADARR__POSTGRES__MAINDB
               value: radarr_main
-            - name: RADARR__POSTGRES__LOGDATABASE
+            - name: RADARR__POSTGRES__LOGDB
               value: radarr_log
           ports:
             - containerPort: 7878

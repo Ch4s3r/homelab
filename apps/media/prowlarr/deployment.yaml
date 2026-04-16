@@ -37,9 +37,9 @@ spec:
               value: postgres
             - name: PROWLARR__POSTGRES__PASSWORD
               value: ""
-            - name: PROWLARR__POSTGRES__MAINDATABASE
+            - name: PROWLARR__POSTGRES__MAINDB
               value: prowlarr_main
-            - name: PROWLARR__POSTGRES__LOGDATABASE
+            - name: PROWLARR__POSTGRES__LOGDB
               value: prowlarr_log
           ports:
             - containerPort: 9696
