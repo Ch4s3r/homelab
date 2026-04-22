@@ -114,6 +114,8 @@ resources:
 
 Renovate's built-in kustomize manager natively tracks `github.com/…?ref=version` URLs and auto-updates the `?ref=` when a new CNPG release is published. The Helm chart `version:` is tracked separately via a `# renovate:` comment using the existing comment-based manager. The two versions must stay in sync (chart `0.x.0` deploys operator `1.x.0`).
 
+**Always verify Renovate detects a dependency after any version-related change** (adding a `# renovate:` comment, changing a tag, adding a new image/chart). Run a dry-run and grep for the expected branch name:
+
 To verify Renovate detects a dependency before committing, downgrade it temporarily and run a dry-run:
 
 ```bash
