@@ -22,3 +22,27 @@ spec:
   tls:
     - hosts:
         - immich
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: immich-ingress-public
+  namespace: immich
+  annotations:
+    tailscale.com/funnel: "true"
+spec:
+  ingressClassName: tailscale
+  rules:
+    - host: immich
+      http:
+        paths:
+          - path: /share
+            pathType: Prefix
+            backend:
+              service:
+                name: immich-server
+                port:
+                  number: 2283
+  tls:
+    - hosts:
+        - immich
