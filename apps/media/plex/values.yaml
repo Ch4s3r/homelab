@@ -1,8 +1,8 @@
 image:
   registry: index.docker.io
   repository: plexinc/pms-docker
-  # renovate: datasource=docker depName=plexinc/pms-docker versioning=loose
-  tag: 1.43.1.10611-1e34174b1-armhf
+  # renovate: datasource=docker depName=plexinc/pms-docker versioning=loose allowedVersions=/.*-arm64$/
+  tag: 1.43.1.10611-1e34174b1-arm64
   pullPolicy: IfNotPresent
 
 pms:
