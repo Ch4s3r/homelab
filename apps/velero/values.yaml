@@ -43,6 +43,7 @@ schedules:
         - "*"
       excludedNamespaces:
         - velero
+        - media
   weekly:
     schedule: "10 0 * * 0"
     template:
@@ -52,6 +53,7 @@ schedules:
         - "*"
       excludedNamespaces:
         - velero
+        - media
   monthly:
     schedule: "15 0 1 * *"
     template:
@@ -61,3 +63,4 @@ schedules:
         - "*"
       excludedNamespaces:
         - velero
+        - media
