@@ -15,4 +15,5 @@ helmCharts:
     repo: https://vmware-tanzu.github.io/helm-charts
     version: 12.0.1
     namespace: velero
+    includeCRDs: true
     valuesFile: values.yaml
