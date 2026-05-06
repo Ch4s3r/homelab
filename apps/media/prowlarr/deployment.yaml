@@ -13,10 +13,23 @@ spec:
       labels:
         app: prowlarr
     spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: busybox:1.37
+          command:
+            - sh
+            - -c
+            - until nc -z preparr-postgres-rw 5432; do echo waiting for postgres; sleep 2; done
       containers:
         - name: prowlarr
           # renovate: datasource=docker depName=linuxserver/prowlarr versioning=docker
           image: linuxserver/prowlarr:2.3.5
+          livenessProbe:
+            tcpSocket:
+              port: 9696
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            failureThreshold: 3
           env:
             - name: TZ
               value: Europe/Vienna
