@@ -7,10 +7,10 @@ resources:
   - namespace.yaml
   - pvc.yaml
   - postgres-cluster.yaml
+  - ingress.yaml
 
 generators:
   - secret-generator.yaml
-  - ingress.yaml
 
 helmCharts:
   - name: immich
