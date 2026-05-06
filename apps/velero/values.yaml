@@ -1,0 +1,63 @@
+initContainers:
+  - name: velero-plugin-for-aws
+    # renovate: datasource=docker depName=velero/velero-plugin-for-aws
+    image: velero/velero-plugin-for-aws:v1.13.0
+    imagePullPolicy: IfNotPresent
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+
+credentials:
+  useSecret: true
+  existingSecret: velero-cloud-credentials
+
+configuration:
+  backupStorageLocation:
+    - name: default
+      provider: aws
+      bucket: velero
+      default: true
+      validationFrequency: "1h"
+      config:
+        region: garage
+        s3ForcePathStyle: "true"
+        s3Url: http://10.0.0.11:3900
+        publicUrl: http://10.0.0.11:3900
+  volumeSnapshotLocation:
+    - name: default
+      provider: aws
+      config:
+        region: garage
+
+deployNodeAgent: true
+
+snapshotsEnabled: false
+
+schedules:
+  daily:
+    schedule: "5 0 * * *"
+    template:
+      ttl: "168h"
+      defaultVolumesToFsBackup: true
+      includedNamespaces:
+        - "*"
+      excludedNamespaces:
+        - velero
+  weekly:
+    schedule: "10 0 * * 0"
+    template:
+      ttl: "720h"
+      defaultVolumesToFsBackup: true
+      includedNamespaces:
+        - "*"
+      excludedNamespaces:
+        - velero
+  monthly:
+    schedule: "15 0 1 * *"
+    template:
+      ttl: "8760h"
+      defaultVolumesToFsBackup: true
+      includedNamespaces:
+        - "*"
+      excludedNamespaces:
+        - velero
