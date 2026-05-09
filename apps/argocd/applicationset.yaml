@@ -32,6 +32,21 @@ spec:
             - .spec.volumeClaimTemplates[]?.kind
             - .spec.volumeClaimTemplates[]?.status
             - .spec.volumeClaimTemplates[]?.spec.volumeMode
+        - group: kyverno.io
+          kind: ClusterPolicy
+          jqPathExpressions:
+            - .spec.admission
+            - .spec.background
+            - .spec.emitWarning
+            - .spec.validationFailureAction
+            - .spec.rules[].skipBackgroundRequests
+            - .status
+        - group: apiextensions.k8s.io
+          kind: CustomResourceDefinition
+          jqPathExpressions:
+            - .spec.conversion
+            - .spec.preserveUnknownFields
+            - .status
       syncPolicy:
         syncOptions:
         - CreateNamespace=true
