@@ -43,9 +43,9 @@ spec:
             - .status
         - group: apiextensions.k8s.io
           kind: CustomResourceDefinition
+          managedFieldsManagers:
+            - apiserver
           jqPathExpressions:
-            - .spec.conversion
-            - .spec.preserveUnknownFields
             - .status
       syncPolicy:
         syncOptions:
