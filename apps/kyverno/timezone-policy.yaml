@@ -1,0 +1,25 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: inject-timezone
+spec:
+  rules:
+    - name: inject-tz-env
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      mutate:
+        patchStrategicMerge:
+          spec:
+            containers:
+              - (name): "?*"
+                env:
+                  - name: TZ
+                    value: Europe/Vienna
+            initContainers:
+              - (name): "?*"
+                env:
+                  - name: TZ
+                    value: Europe/Vienna
