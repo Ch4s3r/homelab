@@ -5,6 +5,7 @@ metadata:
 spec:
   rules:
     - name: inject-tz-env
+      skipBackgroundRequests: false
       match:
         any:
           - resources:
