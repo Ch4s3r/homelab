@@ -35,7 +35,7 @@ snapshotsEnabled: false
 
 schedules:
   daily:
-    schedule: "CRON_TZ=Europe/Vienna 5 0 * * *"
+    schedule: "CRON_TZ=Europe/Vienna 20 18 * * *"
     template:
       ttl: "168h"
       defaultVolumesToFsBackup: true
