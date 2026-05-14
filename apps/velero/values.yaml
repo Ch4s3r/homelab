@@ -35,7 +35,7 @@ snapshotsEnabled: false
 
 schedules:
   daily:
-    schedule: "CRON_TZ=Europe/Vienna 20 18 * * *"
+    schedule: "CRON_TZ=Europe/Vienna 00 20 * * *"
     template:
       ttl: "168h"
       defaultVolumesToFsBackup: true
@@ -45,7 +45,7 @@ schedules:
         - velero
         - media
   weekly:
-    schedule: "CRON_TZ=Europe/Vienna 10 0 * * 0"
+    schedule: "CRON_TZ=Europe/Vienna 00 20 * * 0"
     template:
       ttl: "720h"
       defaultVolumesToFsBackup: true
@@ -55,7 +55,7 @@ schedules:
         - velero
         - media
   monthly:
-    schedule: "CRON_TZ=Europe/Vienna 15 0 1 * *"
+    schedule: "CRON_TZ=Europe/Vienna 00 20 1 * *"
     template:
       ttl: "8760h"
       defaultVolumesToFsBackup: true
