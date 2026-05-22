@@ -1,0 +1,38 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: immich-database
+  namespace: immich
+spec:
+  instances: 1
+
+  inheritedMetadata:
+    labels:
+      velero.io/exclude-from-backup: "true"
+
+  storage:
+    size: 10Gi
+    storageClass: local-path
+
+  imageName: ghcr.io/cloudnative-pg/postgresql:16
+
+  postgresql:
+    shared_preload_libraries: []
+
+  bootstrap:
+    recovery:
+      source: immich-database-source
+
+  externalClusters:
+    - name: immich-database-source
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: immich-database-store
+          serverName: immich-database
+
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: immich-database-store
