@@ -20,16 +20,16 @@ spec:
     shared_preload_libraries: []
 
   bootstrap:
-    initdb:
-      database: immich
-      owner: immich
-      secret:
-        name: immich-postgres-credentials
-      postInitSQL:
-        - CREATE EXTENSION IF NOT EXISTS vector;
-        - CREATE EXTENSION IF NOT EXISTS cube;
-        - CREATE EXTENSION IF NOT EXISTS earthdistance;
-        - ALTER USER immich WITH SUPERUSER;
+    recovery:
+      source: immich-database-source
+
+  externalClusters:
+    - name: immich-database-source
+      plugin:
+        name: barman-cloud.cloudnative-pg.io
+        parameters:
+          barmanObjectName: immich-database-store
+          serverName: immich-database
 
   plugins:
     - name: barman-cloud.cloudnative-pg.io
