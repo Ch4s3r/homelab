@@ -4,7 +4,7 @@ metadata:
   name: immich-database-daily
   namespace: immich
 spec:
-  schedule: "0 0 22 * * *"
+  schedule: "0 21 22 * * *"
   backupOwnerReference: self
   method: plugin
   pluginConfiguration:

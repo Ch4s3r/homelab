@@ -10,13 +10,13 @@ spec:
     endpointURL: http://10.0.0.11:3900
     s3Credentials:
       accessKeyId:
-        name: immich-postgres-backup-s3
+        name: garage-s3-credentials
         key: ACCESS_KEY_ID
       secretAccessKey:
-        name: immich-postgres-backup-s3
+        name: garage-s3-credentials
         key: SECRET_ACCESS_KEY
       region:
-        name: immich-postgres-backup-s3
+        name: garage-s3-credentials
         key: REGION
     wal:
       compression: gzip
