@@ -36,7 +36,7 @@ snapshotsEnabled: false
 
 schedules:
   daily:
-    schedule: "21 22 * * *"
+    schedule: "0 22 * * *"
     template:
       ttl: "168h"
       defaultVolumesToFsBackup: true
@@ -48,7 +48,7 @@ schedules:
       excludedResources:
         - secrets
   weekly:
-    schedule: "21 22 * * *"
+    schedule: "0 22 * * 0"
     template:
       ttl: "720h"
       defaultVolumesToFsBackup: true
@@ -60,7 +60,7 @@ schedules:
       excludedResources:
         - secrets
   monthly:
-    schedule: "21 22 * * *"
+    schedule: "0 22 1 * *"
     template:
       ttl: "8760h"
       defaultVolumesToFsBackup: true
