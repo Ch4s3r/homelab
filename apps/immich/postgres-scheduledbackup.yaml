@@ -4,7 +4,7 @@ metadata:
   name: immich-database-daily
   namespace: immich
 spec:
-  schedule: "0 0 19 * * *"
+  schedule: "CRON_TZ=Europe/Vienna 0 0 19 * * *"
   backupOwnerReference: self
   cluster:
     name: immich-database
