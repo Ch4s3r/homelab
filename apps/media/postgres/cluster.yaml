@@ -6,10 +6,6 @@ metadata:
 spec:
   instances: 1
 
-  inheritedMetadata:
-    labels:
-      velero.io/exclude-from-backup: "true"
-
   storage:
     size: 10Gi
     storageClass: local-path
