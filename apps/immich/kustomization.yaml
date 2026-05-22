@@ -6,6 +6,7 @@ namespace: immich
 resources:
   - namespace.yaml
   - pvc.yaml
+  - postgres-objectstore.yaml
   - postgres-cluster.yaml
   - postgres-scheduledbackup.yaml
   - ingress.yaml
