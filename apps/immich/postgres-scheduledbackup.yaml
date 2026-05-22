@@ -4,7 +4,7 @@ metadata:
   name: immich-database-daily
   namespace: immich
 spec:
-  schedule: "CRON_TZ=Europe/Vienna 0 6 23 * * *"
+  schedule: "0 10 21 * * *"
   backupOwnerReference: self
   method: plugin
   pluginConfiguration:
