@@ -53,3 +53,7 @@ Once the `argocd-webhook` ingress is live, add a webhook in the GitHub repo sett
 - **Events**: `Push`
 
 This triggers ArgoCD to sync immediately on every push instead of waiting for the 3-minute polling interval.
+
+## Backup schedules
+
+All backup schedules (Velero `Schedule`, CNPG `ScheduledBackup`) use **UTC**. CNPG's admission webhook rejects `CRON_TZ=` prefixes, so we standardise on UTC across both stacks. Convert from local when editing: Vienna is UTC+2 (CEST) or UTC+1 (CET).
