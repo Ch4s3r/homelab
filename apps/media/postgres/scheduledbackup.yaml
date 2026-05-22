@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: preparr-postgres-daily
+  namespace: media
+spec:
+  schedule: "0 0 19 * * *"
+  backupOwnerReference: self
+  cluster:
+    name: preparr-postgres

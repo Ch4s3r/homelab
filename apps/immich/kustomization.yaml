@@ -7,6 +7,7 @@ resources:
   - namespace.yaml
   - pvc.yaml
   - postgres-cluster.yaml
+  - postgres-scheduledbackup.yaml
   - ingress.yaml
 
 generators:

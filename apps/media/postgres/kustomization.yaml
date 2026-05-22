@@ -3,3 +3,7 @@ kind: Kustomization
 
 resources:
   - cluster.yaml
+  - scheduledbackup.yaml
+
+generators:
+  - secret-generator.yaml
