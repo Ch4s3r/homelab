@@ -5,6 +5,9 @@ configs:
     server.insecure: true
 
 repoServer:
+  podAnnotations:
+    backup.velero.io/backup-volumes-excludes: ksops-image
+
   env:
     - name: PATH
       value: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/ksops/usr/local/bin
