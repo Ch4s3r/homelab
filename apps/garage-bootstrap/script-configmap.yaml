@@ -16,7 +16,7 @@ data:
       -H "${AUTH}" "${API}/v1/bucket?globalAlias=${BUCKET}")
 
     if [ "${HTTP}" = "200" ]; then
-      BUCKET_ID=$(sed -n 's/.*"id":"\([^"]*\)".*/\1/p' /tmp/lookup | head -1)
+      BUCKET_ID=$(sed -n 's/.*"id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' /tmp/lookup | head -1)
       echo "Bucket exists, id=${BUCKET_ID}. Skipping create."
     else
       echo "Bucket not found (${HTTP}), creating..."
@@ -27,7 +27,7 @@ data:
       if [ "${HTTP}" != "200" ]; then
         echo "Create failed (${HTTP}):"; cat /tmp/create; exit 1
       fi
-      BUCKET_ID=$(sed -n 's/.*"id":"\([^"]*\)".*/\1/p' /tmp/create | head -1)
+      BUCKET_ID=$(sed -n 's/.*"id"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' /tmp/create | head -1)
       echo "Created bucket id=${BUCKET_ID}"
     fi
 
