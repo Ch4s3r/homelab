@@ -15,7 +15,8 @@ configuration:
   backupStorageLocation:
     - name: default
       provider: aws
-      bucket: velero
+      bucket: backups
+      prefix: velero
       default: true
       validationFrequency: "1h"
       config:
@@ -44,6 +45,8 @@ schedules:
       excludedNamespaces:
         - velero
         - media
+      excludedResources:
+        - secrets
   weekly:
     schedule: "CRON_TZ=Europe/Vienna 00 20 * * 0"
     template:
@@ -54,6 +57,8 @@ schedules:
       excludedNamespaces:
         - velero
         - media
+      excludedResources:
+        - secrets
   monthly:
     schedule: "CRON_TZ=Europe/Vienna 00 20 1 * *"
     template:
@@ -64,3 +69,5 @@ schedules:
       excludedNamespaces:
         - velero
         - media
+      excludedResources:
+        - secrets

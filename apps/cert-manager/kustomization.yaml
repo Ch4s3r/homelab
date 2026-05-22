@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: cert-manager
+
+resources:
+  - namespace.yaml
+
+helmCharts:
+  - name: cert-manager
+    releaseName: cert-manager
+    repo: https://charts.jetstack.io
+    namespace: cert-manager
+    # renovate: datasource=helm depName=cert-manager registryUrl=https://charts.jetstack.io versioning=semver
+    version: v1.20.2
+    valuesFile: values.yaml
