@@ -9,7 +9,7 @@ initContainers:
 
 credentials:
   useSecret: true
-  existingSecret: velero-cloud-credentials
+  existingSecret: garage-s3-credentials
 
 configuration:
   backupStorageLocation:
