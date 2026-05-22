@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: garage-bucket-cnpg-immich
+  namespace: garage-bootstrap
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  ttlSecondsAfterFinished: 600
+  backoffLimit: 5
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: bootstrap
+          # renovate: datasource=docker depName=curlimages/curl
+          image: curlimages/curl:8.11.1
+          command: ["sh", "/scripts/bootstrap.sh", "cnpg-immich"]
+          envFrom:
+            - secretRef:
+                name: garage-admin
+          volumeMounts:
+            - name: script
+              mountPath: /scripts
+      volumes:
+        - name: script
+          configMap:
+            name: garage-bucket-bootstrap-script
+            defaultMode: 0755
