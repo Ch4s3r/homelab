@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: garage-bucket-cnpg-media
+  name: garage-bucket-backups
   namespace: garage-bootstrap
   annotations:
     argocd.argoproj.io/hook: Sync
@@ -16,7 +16,7 @@ spec:
         - name: bootstrap
           # renovate: datasource=docker depName=curlimages/curl
           image: curlimages/curl:8.11.1
-          command: ["sh", "/scripts/bootstrap.sh", "cnpg-media"]
+          command: ["sh", "/scripts/bootstrap.sh", "backups"]
           envFrom:
             - secretRef:
                 name: garage-admin

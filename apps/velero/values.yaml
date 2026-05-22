@@ -15,7 +15,8 @@ configuration:
   backupStorageLocation:
     - name: default
       provider: aws
-      bucket: velero
+      bucket: backups
+      prefix: velero
       default: true
       validationFrequency: "1h"
       config:

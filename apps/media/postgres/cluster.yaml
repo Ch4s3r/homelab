@@ -40,7 +40,7 @@ spec:
   backup:
     retentionPolicy: "30d"
     barmanObjectStore:
-      destinationPath: s3://cnpg-media/
+      destinationPath: s3://backups/cnpg/
       endpointURL: http://10.0.0.11:3900
       s3Credentials:
         accessKeyId:

@@ -6,8 +6,7 @@ namespace: garage-bootstrap
 resources:
   - namespace.yaml
   - script-configmap.yaml
-  - job-cnpg-immich.yaml
-  - job-cnpg-media.yaml
+  - job-backups-bucket.yaml
 
 generators:
   - secret-generator.yaml
