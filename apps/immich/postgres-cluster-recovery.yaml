@@ -36,3 +36,4 @@ spec:
       isWALArchiver: true
       parameters:
         barmanObjectName: immich-database-store
+        serverName: immich-database-v2
