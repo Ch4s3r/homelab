@@ -23,7 +23,7 @@ spec:
       containers:
         - name: prowlarr
           # renovate: datasource=docker depName=linuxserver/prowlarr versioning=docker
-          image: linuxserver/prowlarr:2.3.5
+          image: linuxserver/prowlarr:2.4.0@sha256:a46d0ce0a8236bc4e065fe7c91a55d026c9d849620c5845250519b977d8857f3
           livenessProbe:
             tcpSocket:
               port: 9696
