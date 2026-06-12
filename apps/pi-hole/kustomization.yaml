@@ -11,7 +11,7 @@ helmCharts:
     namespace: pi-hole
     releaseName: pi-hole
     repo: https://mojo2600.github.io/pihole-kubernetes/
-    version: 2.35.0
+    version: 2.36.0
     valuesInline:
       env:
         TZ: Europe/Vienna
