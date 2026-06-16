@@ -95,6 +95,17 @@ ArgoCD's repo-server runs the ksops plugin to decrypt at sync time using the clu
 
 **Charts that force secrets into values files (e.g. PrepArr's `.Values.*.config.apiKey` rendered into ConfigMaps) are unavoidable leaks.** Before adopting such a chart, check whether all credentials can be wired through `existingSecret`-style references.
 
+## Image versioning
+
+**Always pin container images with both a semver tag and a sha256 digest** — `image:1.2.3@sha256:...`. Never use `latest` or undigested tags alone. This ensures reproducible deploys and protects against tag mutation.
+
+For images with no semver (e.g. `openthread/border-router` which only publishes `latest`), use `latest@sha256:...` and update the digest manually when upgrading.
+
+To get a digest:
+```bash
+nix shell nixpkgs#crane --command crane digest <image>:<tag>
+```
+
 ## Renovate
 
 `renovate.json5` auto-merges stable non-major updates via squash commits. To pin a version so Renovate tracks it, use an inline comment:
