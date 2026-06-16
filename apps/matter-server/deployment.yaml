@@ -19,8 +19,8 @@ spec:
       dnsPolicy: ClusterFirstWithHostNet
       containers:
       - name: matter-server
-        # renovate: datasource=docker depName=ghcr.io/home-assistant-libs/python-matter-server versioning=loose
-        image: ghcr.io/home-assistant-libs/python-matter-server:stable
+        # renovate: datasource=docker depName=ghcr.io/home-assistant-libs/python-matter-server
+        image: ghcr.io/home-assistant-libs/python-matter-server:8.1.0
         imagePullPolicy: Always
         securityContext:
           privileged: true
