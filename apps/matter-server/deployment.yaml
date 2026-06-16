@@ -20,7 +20,7 @@ spec:
       containers:
       - name: matter-server
         # renovate: datasource=docker depName=ghcr.io/home-assistant-libs/python-matter-server
-        image: ghcr.io/home-assistant-libs/python-matter-server:8.1.0
+        image: ghcr.io/home-assistant-libs/python-matter-server:8.1.0@sha256:170aa093ce91c76cde4cc390918307590f0f5558fcec93f913af3cb019e6562a
         imagePullPolicy: Always
         securityContext:
           privileged: true
