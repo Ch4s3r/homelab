@@ -102,6 +102,8 @@ spec:
         - name: serial-by-id
           mountPath: /dev/serial/by-id
           readOnly: true
+        - name: ttyacm0
+          mountPath: /dev/ttyACM0
         resources:
           limits:
             cpu: "2"
@@ -146,3 +148,7 @@ spec:
         hostPath:
           path: /dev/serial/by-id
           type: Directory
+      - name: ttyacm0
+        hostPath:
+          path: /dev/ttyACM0
+          type: CharDevice
