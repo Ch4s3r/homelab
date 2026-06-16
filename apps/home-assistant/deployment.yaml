@@ -99,6 +99,9 @@ spec:
         - name: localtime
           mountPath: /etc/localtime
           readOnly: true
+        - name: serial-by-id
+          mountPath: /dev/serial/by-id
+          readOnly: true
         resources:
           limits:
             cpu: "2"
@@ -139,3 +142,7 @@ spec:
       - name: ha-config
         configMap:
           name: home-assistant-config
+      - name: serial-by-id
+        hostPath:
+          path: /dev/serial/by-id
+          type: Directory
