@@ -54,6 +54,24 @@ Once the `argocd-webhook` ingress is live, add a webhook in the GitHub repo sett
 
 This triggers ArgoCD to sync immediately on every push instead of waiting for the 3-minute polling interval.
 
+## Thread / OpenThread Border Router (OTBR)
+
+Thread support for Matter-over-Thread devices is provided by a standalone OTBR container (`apps/otbr/`). The Home Assistant Connect ZBT-2 is flashed with Thread RCP firmware and dedicated to Thread (no Zigbee on this radio).
+
+**Before deploying**, update two values in `apps/otbr/deployment.yaml` with the actual values from the K3s node:
+
+| Env var | How to find it |
+|---|---|
+| `OT_RCP_DEVICE` | `ls -l /dev/serial/by-id/` — use the `usb-Nabu_Casa_ZBT-2_*-if00` symlink |
+| `OT_INFRA_IF` | `ip -o link show` — host LAN interface (typically `end0` on Asahi) |
+
+**After ArgoCD syncs**, add the integration in Home Assistant:
+
+1. Settings → Devices & Services → Add Integration → **OpenThread Border Router** → URL `http://127.0.0.1:8081`
+2. Settings → Thread → set as preferred border router
+
+Verify the OTBR REST API is live: `curl http://<node-ip>:8081/node`
+
 ## Backup schedules
 
 All backup schedules (Velero `Schedule`, CNPG `ScheduledBackup`) use **UTC**. CNPG's admission webhook rejects `CRON_TZ=` prefixes, so we standardise on UTC across both stacks. Convert from local when editing: Vienna is UTC+2 (CEST) or UTC+1 (CET).

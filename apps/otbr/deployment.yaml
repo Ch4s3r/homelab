@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otbr
+  namespace: otbr
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: otbr
+  template:
+    metadata:
+      labels:
+        app: otbr
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: otbr
+        # renovate: datasource=docker depName=openthread/border-router
+        image: openthread/border-router:latest@sha256:3ad738e6aaf8b9fac07f5377401cedc1b9932e02b2e5760ba38ac41ce7cad541
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true
+        env:
+        - name: OT_RCP_DEVICE
+          # Replace with the actual by-id symlink from: ls -l /dev/serial/by-id/
+          # Expected format: usb-Nabu_Casa_ZBT-2_<SERIAL>-if00
+          value: "spinel+hdlc+uart:///dev/serial/by-id/usb-Nabu_Casa_ZBT-2_REPLACE_ME-if00?uart-baudrate=460800"
+        - name: OT_INFRA_IF
+          # Replace with the host LAN interface: ip -o link show | grep -v 'lo\|cni\|flannel\|veth\|docker'
+          # Common value on Asahi Linux Mac Mini: end0
+          value: "end0"
+        - name: OT_THREAD_IF
+          value: "wpan0"
+        - name: OT_REST_LISTEN_ADDR
+          value: "0.0.0.0"
+        - name: OT_REST_LISTEN_PORT
+          value: "8081"
+        - name: OT_LOG_LEVEL
+          value: "5"
+        - name: TZ
+          value: "Europe/Vienna"
+        ports:
+        - containerPort: 8080
+          name: web-gui
+          protocol: TCP
+        - containerPort: 8081
+          name: rest-api
+          protocol: TCP
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: dev
+          mountPath: /dev
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: otbr-data-pvc
+      - name: dev
+        hostPath:
+          path: /dev
+          type: Directory
