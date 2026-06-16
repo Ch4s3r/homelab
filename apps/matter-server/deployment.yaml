@@ -29,6 +29,8 @@ spec:
         - /data
         - --paa-root-cert-dir
         - /data/credentials
+        - --primary-interface
+        - end0
         env:
         - name: TZ
           value: "Europe/Vienna"
