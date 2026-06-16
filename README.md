@@ -54,6 +54,16 @@ Once the `argocd-webhook` ingress is live, add a webhook in the GitHub repo sett
 
 This triggers ArgoCD to sync immediately on every push instead of waiting for the 3-minute polling interval.
 
+## Matter Server
+
+Matter device support runs via `apps/matter-server/` (`ghcr.io/home-assistant-libs/python-matter-server`, official HA libs image). WebSocket on `:5580`.
+
+After ArgoCD syncs, add the integration in HA:
+
+- Settings → Devices & Services → Matter (discovered automatically) → URL `ws://127.0.0.1:5580/ws`
+
+Requires OTBR running for Matter-over-Thread devices (see below).
+
 ## Thread / OpenThread Border Router (OTBR)
 
 Thread support for Matter-over-Thread devices is provided by a standalone OTBR container (`apps/otbr/`). The Home Assistant Connect ZBT-2 is flashed with Thread RCP firmware and dedicated to Thread (no Zigbee on this radio).
