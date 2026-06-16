@@ -11,8 +11,10 @@
       "/\\.yaml$/"
     ]
   },
+  "schedule": ["after 8pm on monday", "before 6am on tuesday"],
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
+  "groupName": "all dependencies",
   "customManagers": [
     {
       "customType": "regex",
