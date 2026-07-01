@@ -23,7 +23,7 @@ spec:
         fsGroup: 1000
       initContainers:
       - name: config-init
-        image: busybox:1.38@sha256:b6762ddf4a50aabb5f4d21aa6f447d05d5633fb09f09c08b33f22356a2f98be0
+        image: busybox:1.38@sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d
         command:
         - sh
         - -c
@@ -79,7 +79,7 @@ spec:
             - FOWNER
       containers:
       - name: home-assistant
-        image: ghcr.io/home-assistant/home-assistant:2026.6.3@sha256:aed891b8f801072302815b4b0fab5adb714182967e9d2e2d4a2be558241c73ad
+        image: ghcr.io/home-assistant/home-assistant:2026.7.0@sha256:cb76c9922b530f6a5063a15463eb3ad6de287d297c826713abda16795bb98980
         imagePullPolicy: Always
         securityContext:
           privileged: true
