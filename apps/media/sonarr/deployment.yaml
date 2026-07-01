@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
         - name: wait-for-postgres
-          image: busybox:1.38@sha256:b6762ddf4a50aabb5f4d21aa6f447d05d5633fb09f09c08b33f22356a2f98be0
+          image: busybox:1.38@sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d
           command:
             - sh
             - -c
@@ -23,7 +23,7 @@ spec:
       containers:
         - name: sonarr
           # renovate: datasource=docker depName=linuxserver/sonarr versioning=docker
-          image: linuxserver/sonarr:4.0.17
+          image: linuxserver/sonarr:4.0.19@sha256:fbb15bb4fb14d1ffe017f6be0e3fed8f1b300e4687e329767da0b61f36ba1eed
           livenessProbe:
             tcpSocket:
               port: 8989

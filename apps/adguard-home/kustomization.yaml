@@ -15,7 +15,7 @@ helmCharts:
     namespace: adguard-home
     releaseName: adguard-home
     repo: https://helm-charts.rm3l.org
-    version: 0.24.0
+    version: 0.24.1
     valuesInline:
       image:
         # renovate: datasource=docker depName=adguard/adguardhome versioning=docker
