@@ -82,7 +82,7 @@ spec:
 
       # Meilisearch for full-text search
       - name: meilisearch
-        image: getmeili/meilisearch:v1.47@sha256:4931c0afd68b12d3db4a608268c6785bba26d3f3b43a228eff62ec38d5a47d8d
+        image: getmeili/meilisearch:v1.51@sha256:a9eb29ee09ab4943db3b4c68620bd6f3382e6b2b0ac4431c0e607b48dbcd4c14
         ports:
         - containerPort: 7700
           name: meilisearch

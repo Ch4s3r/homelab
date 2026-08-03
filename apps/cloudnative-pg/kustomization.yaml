@@ -6,7 +6,7 @@ namespace: cnpg-system
 resources:
   - namespace.yaml
   # renovate: datasource=github-releases depName=cloudnative-pg/plugin-barman-cloud
-  - https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.13.0/manifest.yaml
+  - https://github.com/cloudnative-pg/plugin-barman-cloud/releases/download/v0.14.0/manifest.yaml
 
 helmCharts:
   - name: cloudnative-pg
@@ -14,4 +14,4 @@ helmCharts:
     repo: https://cloudnative-pg.github.io/charts
     namespace: cnpg-system
     # renovate: datasource=helm depName=cloudnative-pg registryUrl=https://cloudnative-pg.github.io/charts versioning=semver
-    version: 0.28.0
+    version: 0.29.0
