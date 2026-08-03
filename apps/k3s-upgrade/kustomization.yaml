@@ -3,8 +3,8 @@ kind: Kustomization
 namespace: system-upgrade
 
 resources:
-- https://github.com/rancher/system-upgrade-controller/releases/download/v0.19.2/crd.yaml
-- https://github.com/rancher/system-upgrade-controller/releases/download/v0.19.2/system-upgrade-controller.yaml
+- https://github.com/rancher/system-upgrade-controller/releases/download/v0.20.1/crd.yaml
+- https://github.com/rancher/system-upgrade-controller/releases/download/v0.20.1/system-upgrade-controller.yaml
 - server-plan.yaml
 
 patches:
@@ -17,4 +17,4 @@ patches:
     - op: replace
       path: /spec/version
       # renovate: datasource=docker depName=rancher/k3s-upgrade versioning=docker
-      value: v1.36.1-k3s1
+      value: v1.36.2-k3s1

@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
         - name: wait-for-postgres
-          image: busybox:1.38@sha256:b6762ddf4a50aabb5f4d21aa6f447d05d5633fb09f09c08b33f22356a2f98be0
+          image: busybox:1.38@sha256:dc2d74b28e4cf8984fa52af1f39bc7c3d9c73760b41a74d629f5d11b1ab28616
           command:
             - sh
             - -c
@@ -23,7 +23,7 @@ spec:
       containers:
         - name: radarr
           # renovate: datasource=docker depName=linuxserver/radarr versioning=docker
-          image: linuxserver/radarr:6.2.1@sha256:4c490ccd44d31feb49dc4cc542f2148a420fc1ae0c1ba94e59b39ba4bf112716
+          image: linuxserver/radarr:6.3.0@sha256:a45b5ab0f850f39edb4cc9c95bbd967b52ddc3d4574a4dfb45561177db6c88f4
           livenessProbe:
             tcpSocket:
               port: 7878
