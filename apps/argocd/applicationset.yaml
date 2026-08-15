@@ -61,6 +61,7 @@ spec:
             - .spec.failoverDelay
             - .spec.maxSyncReplicas
             - .spec.minSyncReplicas
+            - .spec.enableSuperuserAccess
       syncPolicy:
         syncOptions:
         - CreateNamespace=true
