@@ -62,6 +62,7 @@ spec:
             - .spec.maxSyncReplicas
             - .spec.minSyncReplicas
             - .spec.enableSuperuserAccess
+            - .spec.resources
       syncPolicy:
         syncOptions:
         - CreateNamespace=true
