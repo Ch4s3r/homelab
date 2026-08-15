@@ -16,7 +16,7 @@ spec:
       containers:
         - name: bazarr
           # renovate: datasource=docker depName=linuxserver/bazarr versioning=docker
-          image: linuxserver/bazarr:1.6.0@sha256:ab401a0f361cfad328e444838b13d5b334b189d0f556fc91a3623eb581df36df
+          image: linuxserver/bazarr:1.6.0@sha256:b3d44d324399152be4d50775ff639a364c0fa1cfda67f71b1f38264c4d0ca09f
           env:
             - name: TZ
               value: Europe/Vienna
