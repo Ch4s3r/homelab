@@ -38,6 +38,29 @@ spec:
             - k3s
           jqPathExpressions:
             - .status
+        - group: postgresql.cnpg.io
+          kind: Cluster
+          jqPathExpressions:
+            - .spec.postgresGID
+            - .spec.postgresUID
+            - .spec.logLevel
+            - .spec.monitoring
+            - .spec.probes
+            - .spec.replicationSlots
+            - .spec.postgresql.parameters
+            - .spec.postgresql.syncReplicaElectionConstraint
+            - .spec.primaryUpdateMethod
+            - .spec.primaryUpdateStrategy
+            - .spec.smartShutdownTimeout
+            - .spec.startDelay
+            - .spec.stopDelay
+            - .spec.switchoverDelay
+            - .spec.storage.resizeInUseVolumes
+            - .spec.affinity
+            - .spec.enablePDB
+            - .spec.failoverDelay
+            - .spec.maxSyncReplicas
+            - .spec.minSyncReplicas
       syncPolicy:
         syncOptions:
         - CreateNamespace=true
