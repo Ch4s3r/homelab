@@ -2,6 +2,18 @@
 
 GitOps homelab running K3s on a Mac Mini M2 (Asahi Linux, ARM64). ArgoCD manages all apps declaratively from this repository.
 
+## Node setup
+
+K3s is installed via `bootstrap.sh`. In addition to that script, apply this one-time OS tuning on the node — Fedora's default `fs.inotify.max_user_instances` (128) is too low for a k3s node running many pods, since each pod/container commonly uses an inotify instance to watch mounted ConfigMaps/Secrets, on top of systemd's own per-cgroup instances. Under pod churn (e.g. a crash-looping deployment) this gets exhausted, causing `Too many open files` / `Failed to create inotify object` errors from systemd and kubelet:
+
+```bash
+sudo tee /etc/sysctl.d/99-k3s-inotify.conf <<EOF
+fs.inotify.max_user_instances = 8192
+fs.inotify.max_user_watches = 1048576
+EOF
+sudo sysctl -p /etc/sysctl.d/99-k3s-inotify.conf
+```
+
 ## Tailscale ACL — Funnel setup
 
 To allow ArgoCD to receive GitHub webhooks via Tailscale Funnel, the `funnel` attribute must be granted to the tag used by the Tailscale Kubernetes Operator proxies (`tag:k8s` by default).
