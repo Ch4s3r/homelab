@@ -13,5 +13,5 @@ helmCharts:
     repo: https://argoproj.github.io/argo-helm
     namespace: argocd
     # renovate: datasource=helm depName=argo-cd registryUrl=https://argoproj.github.io/argo-helm versioning=semver
-    version: 10.4.3
+    version: 10.5.0
     valuesFile: values.yaml
