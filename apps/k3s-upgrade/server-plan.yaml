@@ -15,4 +15,4 @@ spec:
       - "true"
   serviceAccountName: system-upgrade
   upgrade:
-    image: rancher/k3s-upgrade:v1.37.0-k3s1@sha256:7a83f0637c81168a7560000f2bdc972c88f621d7a9872e6afe3bba2d40964d74
+    image: rancher/k3s-upgrade:v1.37.1-k3s1@sha256:7f2bb245bf1fcbadb2c35fe0206f383a0a71461944841ffebc6f368a4f8e46fb
