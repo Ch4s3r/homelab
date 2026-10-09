@@ -50,9 +50,9 @@ Requires OTBR running for Matter-over-Thread devices (see below).
 
 ## Shelly 1PM Gen4 auto button mode
 
-A factory-reset Shelly 1PM Gen4 comes up with its input in Switch mode, and Matter can't change that. A Home Assistant package (`shelly-button-mode.yaml` in `apps/home-assistant/configmap.yaml`, copied to `/config/packages/` on pod start) fixes it automatically: when a new Shelly device is registered, it checks `Shelly.GetDeviceInfo` for model `S4SW-001P16EU`, then sets `Input.SetConfig type=button` and `Switch.SetConfig in_mode=momentary` over local RPC.
+A factory-reset Shelly 1PM Gen4 comes up with its input in Switch mode, and Matter can't change that. A Home Assistant package (`shelly_button_mode.yaml` in `apps/home-assistant/configmap.yaml`, copied to `/config/packages/` on pod start) fixes it automatically: when any new Shelly device is registered (Matter or Shelly integration), it checks every Shelly-integration device with `Shelly.GetDeviceInfo` for model `S4SW-001P16EU`, then sets `Input.SetConfig type=button` and `Switch.SetConfig in_mode=momentary` over local RPC.
 
-The device's IP comes from the **Shelly** integration (Settings → Devices & Services → Shelly, discovered automatically after the reset), so add it there in addition to Matter. A Matter-only device has no IP in HA and is ignored.
+The IPs come from the **Shelly** integration (Settings → Devices & Services → Shelly), so the device must also be added there once; it keeps its IP across later resets. Package filenames must use underscores (HA rejects hyphens).
 
 ## Thread / OpenThread Border Router (OTBR)
 
