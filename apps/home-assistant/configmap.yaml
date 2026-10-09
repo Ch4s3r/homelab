@@ -63,4 +63,4 @@ data:
                       data:
                         host: "{{ repeat.item }}"
                         method: Switch.SetConfig
-                        payload: '{"id":0,"config":{"in_mode":"momentary"}}'
+                        payload: '{"id":0,"config":{"in_mode":"momentary","initial_state":"restore_last"}}'
