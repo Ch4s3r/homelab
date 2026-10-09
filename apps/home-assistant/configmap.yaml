@@ -15,3 +15,48 @@ data:
     automation: !include automations.yaml
     script: !include scripts.yaml
     scene: !include scenes.yaml
+  shelly-button-mode.yaml: |
+    rest_command:
+      shelly_rpc:
+        url: "http://{{ host }}/rpc/{{ method }}"
+        method: post
+        content_type: application/json
+        payload: "{{ payload }}"
+
+    automation:
+      - id: shelly_1pm_gen4_set_button_mode_on_new_device
+        alias: Shelly 1PM Gen4 - set button mode on new device
+        mode: queued
+        triggers:
+          - trigger: event
+            event_type: device_registry_updated
+            event_data:
+              action: create
+        conditions:
+          - condition: template
+            value_template: >
+              {{ device_attr(trigger.event.data.device_id, 'manufacturer') == 'Shelly'
+                 and device_attr(trigger.event.data.device_id, 'configuration_url') is string }}
+        actions:
+          - variables:
+              shelly_host: >
+                {{ device_attr(trigger.event.data.device_id, 'configuration_url')
+                   | regex_findall_index('//([^:/]+)') }}
+          - action: rest_command.shelly_rpc
+            data:
+              host: "{{ shelly_host }}"
+              method: Shelly.GetDeviceInfo
+              payload: "{}"
+            response_variable: shelly_device_info
+          - condition: template
+            value_template: "{{ shelly_device_info.content.model == 'S4SW-001P16EU' }}"
+          - action: rest_command.shelly_rpc
+            data:
+              host: "{{ shelly_host }}"
+              method: Input.SetConfig
+              payload: '{"id":0,"config":{"type":"button"}}'
+          - action: rest_command.shelly_rpc
+            data:
+              host: "{{ shelly_host }}"
+              method: Switch.SetConfig
+              payload: '{"id":0,"config":{"in_mode":"momentary"}}'

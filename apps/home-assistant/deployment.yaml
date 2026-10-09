@@ -47,6 +47,10 @@ spec:
           awk '/^http:/{skip=1; next} skip && /^[ \t]/{next} {skip=0; print}' /config/configuration.yaml > /config/configuration.yaml.tmp
           mv /config/configuration.yaml.tmp /config/configuration.yaml
           
+          grep -q '^homeassistant:' /config/configuration.yaml || printf '\nhomeassistant:\n  packages: !include_dir_named packages\n' >> /config/configuration.yaml
+          mkdir -p /config/packages
+          cp /tmp/config/shelly-button-mode.yaml /config/packages/shelly-button-mode.yaml
+
           # Ensure proper ownership and permissions
           chown -R 1000:1000 /config/
           find /config -type f -exec chmod 644 {} \;
