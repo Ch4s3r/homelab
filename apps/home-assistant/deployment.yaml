@@ -48,8 +48,9 @@ spec:
           mv /config/configuration.yaml.tmp /config/configuration.yaml
           
           grep -q '^homeassistant:' /config/configuration.yaml || printf '\nhomeassistant:\n  packages: !include_dir_named packages\n' >> /config/configuration.yaml
+          rm -rf /config/packages
           mkdir -p /config/packages
-          cp /tmp/config/shelly-button-mode.yaml /config/packages/shelly-button-mode.yaml
+          cp /tmp/config/shelly_button_mode.yaml /config/packages/shelly_button_mode.yaml
 
           # Ensure proper ownership and permissions
           chown -R 1000:1000 /config/

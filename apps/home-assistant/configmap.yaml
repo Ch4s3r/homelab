@@ -15,7 +15,7 @@ data:
     automation: !include automations.yaml
     script: !include scripts.yaml
     scene: !include scenes.yaml
-  shelly-button-mode.yaml: |
+  shelly_button_mode.yaml: |
     rest_command:
       shelly_rpc:
         url: "http://{{ host }}/rpc/{{ method }}"
@@ -34,29 +34,33 @@ data:
               action: create
         conditions:
           - condition: template
-            value_template: >
-              {{ device_attr(trigger.event.data.device_id, 'manufacturer') == 'Shelly'
-                 and device_attr(trigger.event.data.device_id, 'configuration_url') is string }}
+            value_template: "{{ device_attr(trigger.event.data.device_id, 'manufacturer') == 'Shelly' }}"
         actions:
           - variables:
-              shelly_host: >
-                {{ device_attr(trigger.event.data.device_id, 'configuration_url')
-                   | regex_findall_index('//([^:/]+)') }}
-          - action: rest_command.shelly_rpc
-            data:
-              host: "{{ shelly_host }}"
-              method: Shelly.GetDeviceInfo
-              payload: "{}"
-            response_variable: shelly_device_info
-          - condition: template
-            value_template: "{{ shelly_device_info.content.model == 'S4SW-001P16EU' }}"
-          - action: rest_command.shelly_rpc
-            data:
-              host: "{{ shelly_host }}"
-              method: Input.SetConfig
-              payload: '{"id":0,"config":{"type":"button"}}'
-          - action: rest_command.shelly_rpc
-            data:
-              host: "{{ shelly_host }}"
-              method: Switch.SetConfig
-              payload: '{"id":0,"config":{"in_mode":"momentary"}}'
+              shelly_hosts: >
+                {{ integration_entities('shelly') | map('device_id') | unique
+                   | map('device_attr', 'configuration_url') | select('string')
+                   | map('regex_findall_index', '//([^:/]+)') | list }}
+          - repeat:
+              for_each: "{{ shelly_hosts }}"
+              sequence:
+                - action: rest_command.shelly_rpc
+                  data:
+                    host: "{{ repeat.item }}"
+                    method: Shelly.GetDeviceInfo
+                    payload: "{}"
+                  response_variable: shelly_device_info
+                - if:
+                    - condition: template
+                      value_template: "{{ shelly_device_info.content.model == 'S4SW-001P16EU' }}"
+                  then:
+                    - action: rest_command.shelly_rpc
+                      data:
+                        host: "{{ repeat.item }}"
+                        method: Input.SetConfig
+                        payload: '{"id":0,"config":{"type":"button"}}'
+                    - action: rest_command.shelly_rpc
+                      data:
+                        host: "{{ repeat.item }}"
+                        method: Switch.SetConfig
+                        payload: '{"id":0,"config":{"in_mode":"momentary"}}'
