@@ -20,7 +20,7 @@ spec:
       containers:
       - name: otbr
         # renovate: datasource=docker depName=openthread/border-router
-        image: openthread/border-router:latest@sha256:6e4a0993a897f36f53bd9cc86626b14e0bf3643281559c24663efb67ca054595
+        image: openthread/border-router:latest@sha256:5decfc6d140497711bf0a08a67b74a5a040e270f9ced6a5ba7107538ba5afa46
         imagePullPolicy: Always
         securityContext:
           privileged: true
