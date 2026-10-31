@@ -16,3 +16,4 @@ helmCharts:
     valuesInline:
       reloader:
         autoReloadAll: true
+        ignoreNamespaces: tailscale
