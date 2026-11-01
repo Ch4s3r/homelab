@@ -8,7 +8,7 @@ ArgoCD-based GitOps homelab running K3s on a Mac Mini M2 (ARM64, Asahi Linux). A
 
 **Do not make changes directly with `kubectl`. All changes must go through Git** — ArgoCD will reconcile them automatically once merged to `main`.
 
-**The `main` branch is protected and requires a passing `lint` status check.** Always push changes on a feature branch, open a PR, wait for checks to pass, then merge. Never push directly to `main`.
+Changes may be committed directly to `main`; there is no branch protection or CI lint gate. Run `devenv test` locally to lint kustomize apps before pushing.
 
 ## Deploying / Modifying Apps
 
