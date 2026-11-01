@@ -17,22 +17,6 @@ spec:
     spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      initContainers:
-      - name: backup-python-data-and-chown
-        image: busybox:1.38@sha256:dc2d74b28e4cf8984fa52af1f39bc7c3d9c73760b41a74d629f5d11b1ab28616
-        command:
-        - sh
-        - -c
-        - |
-          set -e
-          if [ ! -d /data/python-matter-server-backup ]; then
-            mkdir /data/python-matter-server-backup
-            cp -a /data/*.json /data/python-matter-server-backup/ 2>/dev/null || true
-          fi
-          chown -R 1000:1000 /data
-        volumeMounts:
-        - name: data
-          mountPath: /data
       containers:
       - name: matter-server
         image: ghcr.io/matter-js/matterjs-server:1.5.5@sha256:ee149c7c67eff0e90f131e8f0d628f7b099591ec58473c8cda1209e8ae4df66e
