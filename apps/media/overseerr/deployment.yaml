@@ -14,7 +14,6 @@ spec:
     spec:
       containers:
         - name: overseerr
-          # renovate: datasource=docker depName=linuxserver/overseerr versioning=docker
           image: linuxserver/overseerr:1.35.0
           env:
             - name: PUID

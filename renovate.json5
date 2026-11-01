@@ -12,6 +12,11 @@
       "/\\.yaml$/"
     ]
   },
+  "helm-values": {
+    "managerFilePatterns": [
+      "/-values\\.ya?ml$/"
+    ]
+  },
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
   "customManagers": [
@@ -34,7 +39,7 @@
         "/.*\\.yaml$/"
       ],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+) versioning=(?<versioning>\\S+)\\s+[\\s\\S]*?(?<key>\\w+):\\s*(?<currentValue>\\S+)"
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+) versioning=(?<versioning>\\S+)\\s*\\n\\s*-?\\s*\\w+:\\s*[\"']?(?:[^\\s\"'@]+:)?(?<currentValue>[^\\s\"'@]+)(?:@(?<currentDigest>sha256:[a-f0-9]+))?"
       ],
       "datasourceTemplate": "{{{datasource}}}",
       "depNameTemplate": "{{{depName}}}",

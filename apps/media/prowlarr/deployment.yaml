@@ -22,7 +22,6 @@ spec:
             - until nc -z preparr-postgres-rw 5432; do echo waiting for postgres; sleep 2; done
       containers:
         - name: prowlarr
-          # renovate: datasource=docker depName=linuxserver/prowlarr versioning=docker
           image: linuxserver/prowlarr:2.7.0@sha256:04be30163fbaf48d6aeee7b5893c9f6614ffbad6d853971df0d6dcdf01c7f104
           livenessProbe:
             tcpSocket:

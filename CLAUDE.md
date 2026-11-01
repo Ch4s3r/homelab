@@ -99,7 +99,7 @@ ArgoCD's repo-server runs the ksops plugin to decrypt at sync time using the clu
 
 **Always pin container images with both a semver tag and a sha256 digest** — `image:1.2.3@sha256:...`. Never use `latest` or undigested tags alone. This ensures reproducible deploys and protects against tag mutation.
 
-For images with no semver (e.g. `openthread/border-router` which only publishes `latest`), use `latest@sha256:...` and update the digest manually when upgrading.
+For images with no semver, use `latest@sha256:...`; Renovate keeps the digest current.
 
 To get a digest:
 ```bash

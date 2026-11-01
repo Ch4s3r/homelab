@@ -68,7 +68,7 @@ extraVolumeMounts:
 # Define a simple init container to configure the node
 initContainers:
   - name: configure-single-node
-    image: busybox:latest
+    image: busybox:1.38@sha256:dc2d74b28e4cf8984fa52af1f39bc7c3d9c73760b41a74d629f5d11b1ab28616
     command: ['sh', '-c', 'echo "Setting up single node mode" && echo "couchdb@127.0.0.1" > /tmp/nodename && cp /tmp/nodename /opt/couchdb-data/nodename']
     volumeMounts:
       - name: data
