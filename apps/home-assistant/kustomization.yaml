@@ -10,3 +10,9 @@ resources:
 - service.yaml
 - pvc.yaml
 - ingress.yaml
+configMapGenerator:
+- name: home-assistant-floorplans
+  files:
+  - floorplans/ground-floor.webp
+  - floorplans/basement.webp
+  - floorplans/upper-floor.webp

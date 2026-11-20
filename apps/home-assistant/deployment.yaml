@@ -48,6 +48,8 @@ spec:
           rm -rf /config/packages
           mkdir -p /config/packages
           cp /tmp/config/shelly_button_mode.yaml /config/packages/shelly_button_mode.yaml
+          mkdir -p /config/www/floorplans
+          cp /tmp/floorplans/*.webp /config/www/floorplans/
 
           # Ensure proper ownership and permissions
           chown -R 1000:1000 /config/
@@ -59,6 +61,8 @@ spec:
           mountPath: /config
         - name: ha-config
           mountPath: /tmp/config
+        - name: floorplans
+          mountPath: /tmp/floorplans
         securityContext:
           runAsUser: 0
           runAsGroup: 0
@@ -130,6 +134,9 @@ spec:
       - name: ha-config
         configMap:
           name: home-assistant-config
+      - name: floorplans
+        configMap:
+          name: home-assistant-floorplans
       - name: dev
         hostPath:
           path: /dev
