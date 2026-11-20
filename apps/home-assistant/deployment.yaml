@@ -48,6 +48,7 @@ spec:
           rm -rf /config/packages
           mkdir -p /config/packages
           cp /tmp/config/shelly_button_mode.yaml /config/packages/shelly_button_mode.yaml
+          cp /tmp/config/shutter_automation.yaml /config/packages/shutter_automation.yaml
           mkdir -p /config/www/floorplans
           cp /tmp/floorplans/*.webp /config/www/floorplans/
 

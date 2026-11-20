@@ -72,3 +72,12 @@ Thread support for Matter-over-Thread devices is provided by a standalone OTBR c
 
 Verify the OTBR REST API is live: `curl http://<node-ip>:8081/node`
 
+## Shutter automation
+
+`shutter_automation.yaml` (in `apps/home-assistant/configmap.yaml`, copied to `/config/packages/` on pod start) moves the shutters with daylight:
+
+- **Open** at sunrise, or at 07:30 if the sun is already up.
+- **Close** at sunset, or at 22:00 if the sun is already down. Nothing happens before 07:30 or after 22:00.
+- **Living room 2** is never fully closed: when closing it goes to position 50 (50% open), and it is left alone if already below 50.
+
+All covers are picked up automatically: opening uses `entity_id: all`, closing uses every cover in `states.cover` except `cover.living_room_2_2`. New covers are included without editing the file.

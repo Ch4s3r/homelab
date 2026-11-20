@@ -64,3 +64,62 @@ data:
                         host: "{{ repeat.item }}"
                         method: Switch.SetConfig
                         payload: '{"id":0,"config":{"in_mode":"momentary","initial_state":"restore_last"}}'
+  shutter_automation.yaml: |
+    automation:
+      - id: shutters_open_at_sunrise_not_before_0730
+        alias: Shutters - open at sunrise (not before 07:30)
+        mode: single
+        triggers:
+          - trigger: sun
+            event: sunrise
+          - trigger: time
+            at: "07:30:00"
+        conditions:
+          - condition: time
+            after: "07:30:00"
+            before: "22:00:00"
+          - condition: state
+            entity_id: sun.sun
+            state: above_horizon
+        actions:
+          - action: cover.open_cover
+            target:
+              entity_id: all
+      - id: shutters_close_at_sunset_not_after_2200
+        alias: Shutters - close at sunset (not after 22:00)
+        mode: single
+        triggers:
+          - trigger: sun
+            event: sunset
+        conditions:
+          - condition: time
+            after: "07:30:00"
+            before: "22:00:00"
+        actions:
+          - action: cover.close_cover
+            target:
+              entity_id: "{{ states.cover | map(attribute='entity_id') | reject('equalto', 'cover.living_room_2_2') | list }}"
+          - action: cover.set_cover_position
+            target:
+              entity_id: cover.living_room_2_2
+            data:
+              position: "{{ [50, state_attr('cover.living_room_2_2', 'current_position') | int(50)] | min }}"
+      - id: shutters_close_at_2200_when_dark
+        alias: Shutters - close at 22:00 when dark
+        mode: single
+        triggers:
+          - trigger: time
+            at: "22:00:00"
+        conditions:
+          - condition: state
+            entity_id: sun.sun
+            state: below_horizon
+        actions:
+          - action: cover.close_cover
+            target:
+              entity_id: "{{ states.cover | map(attribute='entity_id') | reject('equalto', 'cover.living_room_2_2') | list }}"
+          - action: cover.set_cover_position
+            target:
+              entity_id: cover.living_room_2_2
+            data:
+              position: "{{ [50, state_attr('cover.living_room_2_2', 'current_position') | int(50)] | min }}"
