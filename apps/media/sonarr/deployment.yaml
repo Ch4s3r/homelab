@@ -22,7 +22,7 @@ spec:
             - until nc -z preparr-postgres-rw 5432; do echo waiting for postgres; sleep 2; done
       containers:
         - name: sonarr
-          image: linuxserver/sonarr:4.0.20@sha256:a5c1a5fecbef946927ab90ad68df319ac5fe644057e5fc18cd993f01ac07b2b2
+          image: linuxserver/sonarr:4.0.20@sha256:339814bbf50599ac3b59077c252f29833d0138b59a062d0e82ce37bdc7f04f86
           livenessProbe:
             tcpSocket:
               port: 8989
