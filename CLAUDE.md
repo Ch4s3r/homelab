@@ -57,7 +57,7 @@ spec:
   rules:
     - host: {app-name}
 ```
-This makes the app reachable at `https://{app-name}.bumblebee-themis.ts.net/`.
+This makes the app reachable at `https://{app-name}.bagrid-scylla.ts.net/`.
 
 ## Secrets
 

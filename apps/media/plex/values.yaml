@@ -4,7 +4,7 @@ pms:
 
 extraEnv:
   TZ: Europe/Vienna
-  ADVERTISE_IP: https://plex.bumblebee-themis.ts.net:443/
+  ADVERTISE_IP: https://plex.bagrid-scylla.ts.net:443/
   ALLOWED_NETWORKS: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,100.64.0.0/10
 
 ingress:

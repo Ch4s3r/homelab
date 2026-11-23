@@ -60,7 +60,7 @@ sops apps/<app>/secret.sops.yaml
 
 Once the `argocd-webhook` ingress is live, add a webhook in the GitHub repo settings:
 
-- **URL**: `https://argocd-webhook.bumblebee-themis.ts.net/api/webhook`
+- **URL**: `https://argocd-webhook.bagrid-scylla.ts.net/api/webhook`
 - **Content type**: `application/json`
 - **Events**: `Push`
 
