@@ -324,7 +324,7 @@ spec:
               if [ "$RADARR_COUNT" -eq 0 ]; then
                 curl -sf -b "$COOKIE" -X POST \
                   -H 'Content-Type: application/json' \
-                  -d "{\"name\":\"Radarr\",\"hostname\":\"radarr\",\"port\":7878,\"apiKey\":\"$RADARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":$RADARR_PROFILE_ID,\"activeProfileName\":\"$RADARR_PROFILE_NAME\",\"activeDirectory\":\"/media/movies\",\"is4k\":false,\"minimumAvailability\":\"released\",\"isDefault\":true,\"externalUrl\":\"https://radarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false}" \
+                  -d "{\"name\":\"Radarr\",\"hostname\":\"radarr\",\"port\":7878,\"apiKey\":\"$RADARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":$RADARR_PROFILE_ID,\"activeProfileName\":\"$RADARR_PROFILE_NAME\",\"activeDirectory\":\"/media/movies\",\"is4k\":false,\"minimumAvailability\":\"released\",\"isDefault\":true,\"externalUrl\":\"https://radarr.bagrid-scylla.ts.net\",\"syncEnabled\":true,\"preventSearch\":false}" \
                   "http://overseerr:5055/api/v1/settings/radarr" >/dev/null \
                   && echo "overseerr: radarr added" || echo "overseerr: radarr add failed"
               else
@@ -336,7 +336,7 @@ spec:
               if [ "$SONARR_COUNT" -eq 0 ]; then
                 curl -sf -b "$COOKIE" -X POST \
                   -H 'Content-Type: application/json' \
-                  -d "{\"name\":\"Sonarr\",\"hostname\":\"sonarr\",\"port\":8989,\"apiKey\":\"$SONARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":$SONARR_PROFILE_ID,\"activeProfileName\":\"$SONARR_PROFILE_NAME\",\"activeDirectory\":\"/media/tv\",\"activeLanguageProfileId\":1,\"is4k\":false,\"isDefault\":true,\"externalUrl\":\"https://sonarr.bumblebee-themis.ts.net\",\"syncEnabled\":true,\"preventSearch\":false,\"enableSeasonFolders\":true}" \
+                  -d "{\"name\":\"Sonarr\",\"hostname\":\"sonarr\",\"port\":8989,\"apiKey\":\"$SONARR_API_KEY\",\"useSsl\":false,\"baseUrl\":\"\",\"activeProfileId\":$SONARR_PROFILE_ID,\"activeProfileName\":\"$SONARR_PROFILE_NAME\",\"activeDirectory\":\"/media/tv\",\"activeLanguageProfileId\":1,\"is4k\":false,\"isDefault\":true,\"externalUrl\":\"https://sonarr.bagrid-scylla.ts.net\",\"syncEnabled\":true,\"preventSearch\":false,\"enableSeasonFolders\":true}" \
                   "http://overseerr:5055/api/v1/settings/sonarr" >/dev/null \
                   && echo "overseerr: sonarr added" || echo "overseerr: sonarr add failed"
               else
