@@ -20,7 +20,7 @@ spec:
           karakeep:
             image:
               # renovate: datasource=docker depName=ghcr.io/karakeep-app/karakeep versioning=semver
-              tag: 0.33.2
+              tag: 0.35.0
     ingress:
       karakeep:
         className: tailscale
