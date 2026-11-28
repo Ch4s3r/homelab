@@ -4,6 +4,7 @@
     age.keyFile = "/var/lib/sops-nix/key.txt";
     defaultSopsFile = ../../secrets/macmini.sops.yaml;
     secrets.flux-age-key = { };
+    secrets.tailscale-auth-key = { };
     templates."flux-sops-age.yaml" = {
       path = "/var/lib/rancher/k3s/server/manifests/flux-sops-age.yaml";
       content = ''
