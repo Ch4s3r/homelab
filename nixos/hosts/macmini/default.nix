@@ -5,6 +5,7 @@
     ./hardware.nix
     ./networking.nix
     ./storage.nix
+    ./k3s.nix
     ./users.nix
   ];
 
