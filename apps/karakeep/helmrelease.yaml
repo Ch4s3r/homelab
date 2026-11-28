@@ -21,6 +21,13 @@ spec:
             image:
               # renovate: datasource=docker depName=ghcr.io/karakeep-app/karakeep versioning=semver
               tag: 0.33.2
+      chrome:
+        containers:
+          chrome:
+            image:
+              repository: docker.io/zenika/alpine-chrome
+              # renovate: datasource=docker depName=docker.io/zenika/alpine-chrome
+              tag: 124@sha256:eb3378c1ed0079f94db054a5fe1aaa790a254ec0d6bbc67eda052420d86a179d
     ingress:
       karakeep:
         className: tailscale
