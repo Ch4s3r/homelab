@@ -7,3 +7,4 @@ resources:
   - matter-server.yaml
   - otbr.yaml
   - karakeep.yaml
+  - tailscale.yaml
