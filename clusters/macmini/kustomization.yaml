@@ -5,3 +5,4 @@ resources:
   - vaultwarden.yaml
   - home-assistant.yaml
   - matter-server.yaml
+  - otbr.yaml
