@@ -12,6 +12,14 @@
       "/\\.yaml$/"
     ]
   },
+  "flux": {
+    "managerFilePatterns": [
+      "/^(apps|clusters)/.+\\.ya?ml$/"
+    ]
+  },
+  "nix": {
+    "enabled": true
+  },
   "helm-values": {
     "managerFilePatterns": [
       "/-values\\.ya?ml$/"
