@@ -15,7 +15,7 @@ spec:
     applicationHost: karakeep
     controllers:
       karakeep:
-        replicas: 1
+        replicas: 0
         containers:
           karakeep:
             image:
@@ -28,4 +28,4 @@ spec:
           - hosts:
               - karakeep
     meilisearch:
-      replicaCount: 1
+      replicaCount: 0
