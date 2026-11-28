@@ -4,6 +4,7 @@
     ./hardware-configuration.nix
     ./hardware.nix
     ./networking.nix
+    ./storage.nix
     ./users.nix
   ];
 
