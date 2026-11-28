@@ -8,3 +8,5 @@ resources:
   - otbr.yaml
   - karakeep.yaml
   - tailscale.yaml
+  - cloudnative-pg.yaml
+  - immich.yaml

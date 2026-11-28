@@ -2,22 +2,15 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: immich-database
-  namespace: immich
 spec:
   instances: 1
-
-  inheritedMetadata:
-    labels:
-      velero.io/exclude-from-backup: "true"
 
   storage:
     size: 10Gi
     storageClass: local-path
 
-  imageName: ghcr.io/cloudnative-pg/postgresql:16
-
-  postgresql:
-    shared_preload_libraries: []
+  # renovate: datasource=docker depName=ghcr.io/cloudnative-pg/postgresql
+  imageName: ghcr.io/cloudnative-pg/postgresql:16.16-standard-bookworm@sha256:300335ccf1c739d4becd8d2c91d04557686c100a66a33d49c7ce821430a40b93
 
   bootstrap:
     initdb:
@@ -33,10 +26,3 @@ spec:
         - CREATE EXTENSION IF NOT EXISTS cube;
         - CREATE EXTENSION IF NOT EXISTS earthdistance;
         - ALTER USER immich WITH SUPERUSER;
-
-  plugins:
-    - name: barman-cloud.cloudnative-pg.io
-      enabled: true
-      isWALArchiver: true
-      parameters:
-        barmanObjectName: immich-database-store
