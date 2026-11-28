@@ -3,3 +3,5 @@ kind: Kustomization
 resources:
   - global.yaml
   - vaultwarden.yaml
+  - home-assistant.yaml
+  - matter-server.yaml
