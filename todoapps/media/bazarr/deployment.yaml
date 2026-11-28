@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: bazarr
-          image: linuxserver/bazarr:1.6.2@sha256:8b30e81c4aec2991f469e78fae8afaa89ecc9b21a80e3897f50427216b55470c
+          image: linuxserver/bazarr:1.6.2@sha256:b3db4247d3afa0c68bc5aa311bedd67b1caf4b3eabc3a85577682970435d5013
           env:
             - name: TZ
               value: Europe/Vienna
