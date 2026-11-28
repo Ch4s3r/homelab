@@ -33,7 +33,7 @@ The Asahi kernel has no binary cache and is compiled during install (roughly 30â
 From a machine with Nix, building on the Mac Mini itself:
 
 ```bash
-nixos-rebuild switch --flake ./nixos#macmini --target-host lampe@macmini --build-host lampe@macmini --sudo --ask-sudo-password
+nixos-rebuild switch --flake ./nixos#macmini --target-host lampe@macmini --build-host lampe@macmini --sudo
 ```
 
 ## Notes

@@ -1,3 +1,4 @@
+{ lib, ... }:
 {
   hardware.asahi = {
     enable = true;
@@ -22,6 +23,10 @@
       "/home".options = btrfsOptions;
       "/nix".options = btrfsOptions;
       "/var".options = btrfsOptions;
+      "/boot".options = lib.mkForce [
+        "fmask=0077"
+        "dmask=0077"
+      ];
     };
 
   services.btrfs.autoScrub = {

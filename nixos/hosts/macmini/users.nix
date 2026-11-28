@@ -1,4 +1,6 @@
 {
+  security.sudo.wheelNeedsPassword = false;
+
   users.users.lampe = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
