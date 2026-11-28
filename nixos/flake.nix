@@ -2,11 +2,8 @@
   description = "NixOS configuration for the homelab Mac Mini";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nixos-apple-silicon = {
-      url = "github:nix-community/nixos-apple-silicon/release-2026-07-30";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixos-apple-silicon.url = "github:nix-community/nixos-apple-silicon/release-2026-07-30";
+    nixpkgs.follows = "nixos-apple-silicon/nixpkgs";
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
