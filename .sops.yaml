@@ -1,3 +1,5 @@
 creation_rules:
+  - path_regex: ^nixos/secrets/.*\.sops\.yaml$
+    age: age1887g842zprdv8sculknt80wx4awhfh6mjzst9cxju3lpf9xeq5xslndmcd
   - unencrypted_regex: "^(apiVersion|metadata|kind|type)$"
     age: age1887g842zprdv8sculknt80wx4awhfh6mjzst9cxju3lpf9xeq5xslndmcd

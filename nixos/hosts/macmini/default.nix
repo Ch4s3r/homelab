@@ -6,6 +6,8 @@
     ./networking.nix
     ./storage.nix
     ./k3s.nix
+    ./flux.nix
+    ./secrets.nix
     ./users.nix
   ];
 

@@ -8,6 +8,10 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -15,6 +19,7 @@
       nixpkgs,
       nixos-apple-silicon,
       disko,
+      sops-nix,
       ...
     }:
     {
@@ -23,6 +28,7 @@
         modules = [
           nixos-apple-silicon.nixosModules.apple-silicon-support
           disko.nixosModules.disko
+          sops-nix.nixosModules.sops
           ./hosts/macmini
         ];
       };
